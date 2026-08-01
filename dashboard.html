@@ -41,11 +41,17 @@
         </a>
       </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Main Content -->
     <main class="dashboard-main">
       <div class="dashboard-header">
-        <h1 id="page-title"><span data-i18n="dash.title.profile">个人信息</span></h1>
+        <div class="dashboard-header-left">
+          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <h1 id="page-title"><span data-i18n="dash.title.profile">个人信息</span></h1>
+        </div>
         <div style="display:flex;align-items:center;gap:1rem;">
           <div id="lang-switcher-container"></div>
           <div class="user-badge">
@@ -258,6 +264,24 @@
       loadIdentities();
     }
 
+    // ===== Mobile Sidebar Toggle =====
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const menuToggle = document.getElementById('menu-toggle');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarOverlay.classList.add('visible');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('visible');
+    }
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+    sidebarOverlay.addEventListener('click', closeSidebar);
+
     // ===== Tab Switching =====
     function switchTab(tabName) {
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -276,6 +300,9 @@
       const titleKey = titleKeys[tabName] || 'dash.title.default';
       document.getElementById('page-title').textContent = t(titleKey);
       document.title = t(titleKey) + ' - We Apps Account';
+
+      // Close sidebar on mobile after selecting a tab
+      closeSidebar();
     }
 
     // ===== Render Profile =====
