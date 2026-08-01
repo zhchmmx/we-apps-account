@@ -147,6 +147,7 @@
       }
 
       try {
+        client.setLocale(getCurrentLanguage());
         await account.createVerification(window.location.origin + window.location.pathname);
         showToast(t('verify.resent'), 'success');
       } catch (err) {

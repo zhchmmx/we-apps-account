@@ -433,6 +433,7 @@
     // ===== Verification =====
     async function sendVerification() {
       try {
+        client.setLocale(getCurrentLanguage());
         await account.createVerification(new URL('verify.html', window.location.href).toString());
         showToast(t('msg.verificationSent'), 'success');
       } catch (err) {

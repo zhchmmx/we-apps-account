@@ -126,6 +126,7 @@
       setLoading('forgot-btn', true);
 
       try {
+        client.setLocale(getCurrentLanguage());
         await account.createRecovery(
           email,
           window.location.origin + window.location.pathname
