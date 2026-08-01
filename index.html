@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - We Apps Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .auth-left-content .features {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+    }
+    .feature-item .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      flex-shrink: 0;
+    }
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 0.85rem;
+      margin-top: -0.75rem;
+      margin-bottom: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-layout">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <img src="assets/We.png" alt="We Apps" class="logo-large">
+        <h1>We Apps Account</h1>
+        <p>一个 We Apps 账户，畅享所有 We Apps 服务</p>
+        <div class="features">
+          <div class="feature-item"><span class="dot"></span>统一身份认证，一次登录即可使用所有服务</div>
+          <div class="feature-item"><span class="dot"></span>安全加密，保护您的隐私数据</div>
+          <div class="feature-item"><span class="dot"></span>跨平台同步，随时随地访问</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Login Form -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <img src="assets/We.png" alt="We" class="logo-small">
+        <h2>欢迎回来</h2>
+        <p class="subtitle">登录您的 We Apps 账户</p>
+
+        <div id="login-alert" class="alert"></div>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="email">电子邮件 <span class="required">*</span></label>
+            <input type="email" id="email" class="form-input" placeholder="name@example.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="password">密码 <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="password" class="form-input" placeholder="输入密码" required autocomplete="current-password">
+              <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性">👁</button>
+            </div>
+          </div>
+
+          <a href="forgot.html" class="forgot-link">忘记密码？</a>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="remember" checked>
+            <label for="remember">记住我</label>
+          </div>
+
+          <button type="submit" id="login-btn" class="btn btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-text">登录</span>
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          还没有账户？<a href="register.html">立即注册</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert('login-alert');
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !validateEmail(email)) {
+        showAlert('login-alert', '请输入有效的电子邮件地址', 'error');
+        document.getElementById('email').classList.add('error');
+        return;
+      }
+
+      if (!password || !validatePassword(password)) {
+        showAlert('login-alert', '密码至少需要 8 个字符', 'error');
+        document.getElementById('password').classList.add('error');
+        return;
+      }
+
+      setLoading('login-btn', true);
+
+      try {
+        await account.createEmailPasswordSession({ email, password });
+        showToast('登录成功，正在跳转...', 'success');
+        setTimeout(() => navigateTo('dashboard.html'), 800);
+      } catch (err) {
+        const messages = {
+          'user_invalid_credentials': '电子邮件或密码不正确',
+          'user_session_already_exists': '您已登录，正在跳转...',
+          'general_rate_limit_exceeded': '请求过于频繁，请稍后再试',
+          'user_blocked': '该账户已被禁用',
+        };
+        const msg = messages[err.type] || err.message || '登录失败，请重试';
+        showAlert('login-alert', msg, 'error');
+        if (err.type === 'user_session_already_exists') {
+          setTimeout(() => navigateTo('dashboard.html'), 800);
+        }
+      } finally {
+        setLoading('login-btn', false);
+      }
+    });
+
+    // Clear error on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => input.classList.remove('error'));
+    });
+
+    // Auto-redirect if already logged in
+    (async () => {
+      const user = await checkAuth();
+      if (user) navigateTo('dashboard.html');
+    })();
+  </script>
+</body>
+</html>

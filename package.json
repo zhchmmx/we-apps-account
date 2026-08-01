@@ -1,0 +1,12 @@
+{
+  "name": "we-apps-account",
+  "version": "1.0.0",
+  "description": "We Apps Account - 登录注册管理系统",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -l 5500",
+    "start": "npx serve . -l 5500"
+  },
+  "keywords": ["appwrite", "auth", "account-management"],
+  "license": "MIT"
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>找回密码 - We Apps Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <img src="assets/We.png" alt="We Apps" class="logo-large">
+        <h1>重置密码</h1>
+        <p>别担心，我们会帮您找回账户访问权限</p>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-card">
+        <img src="assets/We.png" alt="We" class="logo-small">
+        <h2>找回密码</h2>
+        <p class="subtitle">输入您的注册邮箱，我们将发送重置链接</p>
+
+        <div id="forgot-alert" class="alert"></div>
+
+        <!-- Step 1: Enter email -->
+        <div id="step-email">
+          <form id="forgot-form" novalidate>
+            <div class="form-group">
+              <label for="email">电子邮件 <span class="required">*</span></label>
+              <input type="email" id="email" class="form-input" placeholder="name@example.com" required autocomplete="email">
+            </div>
+
+            <button type="submit" id="forgot-btn" class="btn btn-primary">
+              <span class="spinner"></span>
+              <span class="btn-text">发送重置链接</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 2: Enter new password -->
+        <div id="step-password" style="display:none;">
+          <div id="success-msg" class="alert alert-success visible">
+            重置链接已发送到您的邮箱，请查收邮件后在此设置新密码。
+          </div>
+
+          <form id="reset-form" novalidate>
+            <input type="hidden" id="user-id">
+            <input type="hidden" id="secret">
+
+            <div class="form-group">
+              <label for="new-password">新密码 <span class="required">*</span></label>
+              <div class="password-wrapper">
+                <input type="password" id="new-password" class="form-input" placeholder="至少 8 个字符" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('new-password', this)">👁</button>
+              </div>
+              <div class="password-strength">
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+              </div>
+              <div class="strength-text"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-new-password">确认新密码 <span class="required">*</span></label>
+              <div class="password-wrapper">
+                <input type="password" id="confirm-new-password" class="form-input" placeholder="再次输入新密码" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('confirm-new-password', this)">👁</button>
+              </div>
+            </div>
+
+            <button type="submit" id="reset-btn" class="btn btn-primary">
+              <span class="spinner"></span>
+              <span class="btn-text">设置新密码</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="auth-footer">
+          <a href="index.html">返回登录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Check for recovery params in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    const secret = urlParams.get('secret');
+
+    if (userId && secret) {
+      document.getElementById('step-email').style.display = 'none';
+      document.getElementById('step-password').style.display = 'block';
+      document.getElementById('user-id').value = userId;
+      document.getElementById('secret').value = secret;
+    }
+
+    // Send recovery email
+    document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert('forgot-alert');
+
+      const email = document.getElementById('email').value.trim();
+      if (!email || !validateEmail(email)) {
+        showAlert('forgot-alert', '请输入有效的电子邮件地址', 'error');
+        return;
+      }
+
+      setLoading('forgot-btn', true);
+
+      try {
+        await account.createRecovery({
+          email,
+          url: window.location.origin + window.location.pathname
+        });
+        showAlert('forgot-alert', '重置链接已发送到您的邮箱，请查收邮件', 'success');
+        showToast('请检查您的邮箱', 'info');
+      } catch (err) {
+        const messages = {
+          'user_not_found': '该邮箱未注册账户',
+          'general_rate_limit_exceeded': '请求过于频繁，请稍后再试',
+        };
+        const msg = messages[err.type] || err.message || '发送失败，请重试';
+        showAlert('forgot-alert', msg, 'error');
+      } finally {
+        setLoading('forgot-btn', false);
+      }
+    });
+
+    // Reset password
+    document.getElementById('reset-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert('forgot-alert');
+
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-new-password').value;
+      const uid = document.getElementById('user-id').value;
+      const sec = document.getElementById('secret').value;
+
+      if (!newPassword || !validatePassword(newPassword)) {
+        showAlert('forgot-alert', '密码至少需要 8 个字符', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showAlert('forgot-alert', '两次输入的密码不一致', 'error');
+        return;
+      }
+
+      setLoading('reset-btn', true);
+
+      try {
+        await account.updateRecovery({
+          userId: uid,
+          secret: sec,
+          password: newPassword
+        });
+        showToast('密码重置成功！', 'success');
+        setTimeout(() => navigateTo('index.html'), 1500);
+      } catch (err) {
+        const messages = {
+          'general_invalid_response': '重置链接已过期或无效，请重新申请',
+          'general_rate_limit_exceeded': '请求过于频繁，请稍后再试',
+        };
+        const msg = messages[err.type] || err.message || '重置失败，请重试';
+        showAlert('forgot-alert', msg, 'error');
+      } finally {
+        setLoading('reset-btn', false);
+      }
+    });
+
+    document.getElementById('new-password').addEventListener('input', (e) => {
+      updatePasswordStrength(e.target.value);
+    });
+
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => input.classList.remove('error'));
+    });
+  </script>
+</body>
+</html>
