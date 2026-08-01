@@ -157,7 +157,6 @@
         <div class="card">
           <div class="card-header">
             <h3>活跃会话</h3>
-            <button class="btn btn-danger btn-sm" onclick="deleteAllSessions()">删除所有其他会话</button>
           </div>
           <ul class="session-list" id="session-list">
             <li class="empty-state"><div class="icon">📱</div><p>加载会话中...</p></li>
@@ -389,19 +388,6 @@
       } catch (err) {
         showToast(err.message || '删除失败', 'error');
       }
-    }
-
-    async function deleteAllSessions() {
-      pendingAction = async () => {
-        try {
-          await account.deleteSessions();
-          showToast('所有其他会话已删除', 'success');
-          loadSessions();
-        } catch (err) {
-          showToast(err.message || '操作失败', 'error');
-        }
-      };
-      showModal('删除所有其他会话', '这将删除除当前设备外的所有活跃会话。确定继续吗？');
     }
 
     // ===== Identities =====
