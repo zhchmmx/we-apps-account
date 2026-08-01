@@ -66,7 +66,10 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-  return password.length >= 8;
+  return password.length >= 8 && password.length <= 256
+    && /[A-Z]/.test(password)
+    && /[a-z]/.test(password)
+    && /[^A-Za-z0-9]/.test(password);
 }
 
 // Password strength checker
@@ -80,9 +83,10 @@ function checkPasswordStrength(password) {
   return score;
 }
 
-function updatePasswordStrength(password) {
-  const bars = document.querySelectorAll('.strength-bar');
-  const text = document.querySelector('.strength-text');
+function updatePasswordStrength(password, container) {
+  const root = container || document;
+  const bars = root.querySelectorAll('.strength-bar');
+  const text = root.querySelector('.strength-text');
   if (!bars.length) return;
   
   const score = checkPasswordStrength(password);
@@ -99,6 +103,27 @@ function updatePasswordStrength(password) {
   if (text) {
     text.textContent = password.length > 0 ? labels[score] : '';
   }
+}
+
+// Password requirements indicator
+function updatePasswordRequirements(password, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const checks = [
+    { key: 'pwReq.length',    ok: password.length >= 8 && password.length <= 256 },
+    { key: 'pwReq.uppercase', ok: /[A-Z]/.test(password) },
+    { key: 'pwReq.lowercase', ok: /[a-z]/.test(password) },
+    { key: 'pwReq.symbol',    ok: /[^A-Za-z0-9]/.test(password) },
+  ];
+
+  const items = container.querySelectorAll('.pw-req-item');
+  checks.forEach((check, i) => {
+    if (items[i]) {
+      items[i].classList.toggle('met', check.ok);
+      items[i].classList.toggle('unmet', !check.ok && password.length > 0);
+    }
+  });
 }
 
 // Toggle password visibility

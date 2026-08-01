@@ -1126,3 +1126,59 @@ a:hover {
   font-weight: 600;
   background: var(--primary-bg);
 }
+
+/* ===== Password Requirements ===== */
+.pw-requirements {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  display: none;
+}
+
+.pw-requirements.visible {
+  display: block;
+}
+
+.pw-req-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.pw-req-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+
+.pw-req-item .pw-req-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.pw-req-item.unmet .pw-req-icon {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.pw-req-item.met .pw-req-icon {
+  background: var(--success);
+  color: #fff;
+}
+
+.pw-req-item.met {
+  color: var(--success);
+}

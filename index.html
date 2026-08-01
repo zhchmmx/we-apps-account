@@ -95,7 +95,7 @@
         return;
       }
 
-      if (!password || !validatePassword(password)) {
+      if (!password) {
         showAlert('login-alert', t('login.passwordMin8'), 'error');
         document.getElementById('password').classList.add('error');
         return;

@@ -54,6 +54,13 @@
               <div class="strength-bar"></div>
             </div>
             <div class="strength-text"></div>
+            <div class="pw-requirements" id="pw-requirements">
+              <div class="pw-req-title" data-i18n="pwReq.title">密码要求</div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.length">8 到 256 个字符</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.uppercase">至少一个大写字母</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.lowercase">至少一个小写字母</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.symbol">至少一个符号（如 !@#$%）</span></div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -93,9 +100,14 @@
     // Inject language switcher
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // Password strength
-    document.getElementById('password').addEventListener('input', (e) => {
-      updatePasswordStrength(e.target.value);
+    // Password strength & requirements
+    const pwInput = document.getElementById('password');
+    const pwReqPanel = document.getElementById('pw-requirements');
+    pwInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      updatePasswordStrength(val);
+      pwReqPanel.classList.toggle('visible', val.length > 0);
+      updatePasswordRequirements(val, 'pw-requirements');
     });
 
     document.getElementById('register-form').addEventListener('submit', async (e) => {
