@@ -478,6 +478,12 @@ function getCurrentLanguage() {
   return localStorage.getItem('app-language') || detectBrowserLanguage();
 }
 
+// Map app language code to Appwrite-supported locale for email templates
+function getAppwriteLocale() {
+  const map = { zh: 'zh-cn', en: 'en' };
+  return map[getCurrentLanguage()] || 'en';
+}
+
 function detectBrowserLanguage() {
   const browserLang = (navigator.language || navigator.userLanguage || 'zh').toLowerCase();
   const shortLang = browserLang.split('-')[0];
