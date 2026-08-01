@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>账户管理 - We Apps Account</title>
+  <title data-i18n-page-title="dash.title.default">账户管理 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -17,27 +17,27 @@
         <span>We Apps Account</span>
       </div>
       <nav class="sidebar-nav">
-        <div class="nav-section-title">账户</div>
+        <div class="nav-section-title" data-i18n="nav.account">账户</div>
         <a class="nav-item active" data-tab="profile" onclick="switchTab('profile')">
-          <span class="icon">👤</span> 个人信息
+          <span class="icon">👤</span> <span data-i18n="nav.profile">个人信息</span>
         </a>
         <a class="nav-item" data-tab="security" onclick="switchTab('security')">
-          <span class="icon">🔒</span> 安全设置
+          <span class="icon">🔒</span> <span data-i18n="nav.security">安全设置</span>
         </a>
         <a class="nav-item" data-tab="sessions" onclick="switchTab('sessions')">
-          <span class="icon">📱</span> 活跃会话
+          <span class="icon">📱</span> <span data-i18n="nav.sessions">活跃会话</span>
         </a>
-        <div class="nav-section-title">高级</div>
+        <div class="nav-section-title" data-i18n="nav.advanced">高级</div>
         <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
-          <span class="icon">🔗</span> 关联身份
+          <span class="icon">🔗</span> <span data-i18n="nav.identities">关联身份</span>
         </a>
         <a class="nav-item" data-tab="danger" onclick="switchTab('danger')">
-          <span class="icon">⚠️</span> 危险操作
+          <span class="icon">⚠️</span> <span data-i18n="nav.danger">危险操作</span>
         </a>
       </nav>
       <div class="sidebar-footer">
         <a class="nav-item" onclick="logout()">
-          <span class="icon">🚪</span> 退出登录
+          <span class="icon">🚪</span> <span data-i18n="nav.logout">退出登录</span>
         </a>
       </div>
     </aside>
@@ -45,10 +45,13 @@
     <!-- Main Content -->
     <main class="dashboard-main">
       <div class="dashboard-header">
-        <h1 id="page-title">个人信息</h1>
-        <div class="user-badge">
-          <div class="user-avatar" id="avatar-initial">W</div>
-          <span id="user-name-display">加载中...</span>
+        <h1 id="page-title"><span data-i18n="dash.title.profile">个人信息</span></h1>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <div id="lang-switcher-container"></div>
+          <div class="user-badge">
+            <div class="user-avatar" id="avatar-initial">W</div>
+            <span id="user-name-display" data-i18n="dash.loading">加载中...</span>
+          </div>
         </div>
       </div>
 
@@ -56,58 +59,58 @@
       <div class="verify-banner" id="verify-banner">
         <div class="banner-text">
           <span>⚠️</span>
-          <span>您的邮箱尚未验证，部分功能可能受限。</span>
+          <span data-i18n="dash.verifyBanner">您的邮箱尚未验证，部分功能可能受限。</span>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="sendVerification()">立即验证</button>
+        <button class="btn btn-secondary btn-sm" onclick="sendVerification()" data-i18n="dash.verifyNow">立即验证</button>
       </div>
 
       <!-- ===== Profile Tab ===== -->
       <div class="page-section active" id="tab-profile">
         <div class="card">
           <div class="card-header">
-            <h3>基本信息</h3>
-            <span class="badge" id="verify-badge">未验证</span>
+            <h3 data-i18n="dash.basicInfo">基本信息</h3>
+            <span class="badge" id="verify-badge" data-i18n="dash.unverified">未验证</span>
           </div>
           <div class="info-grid">
             <div class="info-item">
-              <div class="label">用户 ID</div>
+              <div class="label" data-i18n="dash.userId">用户 ID</div>
               <div class="value" id="info-user-id">-</div>
             </div>
             <div class="info-item">
-              <div class="label">姓名</div>
+              <div class="label" data-i18n="dash.name">姓名</div>
               <div class="value" id="info-name">-</div>
             </div>
             <div class="info-item">
-              <div class="label">电子邮件</div>
+              <div class="label" data-i18n="dash.email">电子邮件</div>
               <div class="value" id="info-email">-</div>
             </div>
             <div class="info-item">
-              <div class="label">注册时间</div>
+              <div class="label" data-i18n="dash.created">注册时间</div>
               <div class="value" id="info-created">-</div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>修改姓名</h3></div>
+          <div class="card-header"><h3 data-i18n="dash.changeName">修改姓名</h3></div>
           <form id="update-name-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
             <div class="form-group" style="flex:1;margin-bottom:0;">
-              <input type="text" id="new-name" class="form-input" placeholder="输入新姓名">
+              <input type="text" id="new-name" class="form-input" data-i18n-placeholder="dash.namePlaceholder" placeholder="输入新姓名">
             </div>
-            <button type="submit" class="btn btn-secondary btn-sm">保存</button>
+            <button type="submit" class="btn btn-secondary btn-sm" data-i18n="common.save">保存</button>
           </form>
         </div>
 
         <div class="card">
-          <div class="card-header"><h3>修改邮箱</h3></div>
+          <div class="card-header"><h3 data-i18n="dash.changeEmail">修改邮箱</h3></div>
           <form id="update-email-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
             <div class="form-group" style="flex:1;margin-bottom:0;">
-              <input type="email" id="new-email" class="form-input" placeholder="新邮箱地址">
+              <input type="email" id="new-email" class="form-input" data-i18n-placeholder="dash.emailPlaceholder" placeholder="新邮箱地址">
             </div>
             <div class="form-group" style="width:200px;margin-bottom:0;">
-              <input type="password" id="email-password" class="form-input" placeholder="当前密码">
+              <input type="password" id="email-password" class="form-input" data-i18n-placeholder="dash.currentPassword" placeholder="当前密码">
             </div>
-            <button type="submit" class="btn btn-secondary btn-sm">更新</button>
+            <button type="submit" class="btn btn-secondary btn-sm" data-i18n="common.update">更新</button>
           </form>
         </div>
       </div>
@@ -115,19 +118,19 @@
       <!-- ===== Security Tab ===== -->
       <div class="page-section" id="tab-security">
         <div class="card">
-          <div class="card-header"><h3>修改密码</h3></div>
+          <div class="card-header"><h3 data-i18n="dash.changePassword">修改密码</h3></div>
           <form id="security-password-form">
             <div class="form-group">
-              <label>当前密码</label>
+              <label data-i18n="dash.currentPasswordLabel">当前密码</label>
               <div class="password-wrapper">
-                <input type="password" id="sec-old-password" class="form-input" placeholder="输入当前密码">
+                <input type="password" id="sec-old-password" class="form-input" data-i18n-placeholder="dash.currentPasswordPlaceholder" placeholder="输入当前密码">
                 <button type="button" class="password-toggle" onclick="togglePassword('sec-old-password', this)">👁</button>
               </div>
             </div>
             <div class="form-group">
-              <label>新密码</label>
+              <label data-i18n="dash.newPassword">新密码</label>
               <div class="password-wrapper">
-                <input type="password" id="sec-new-password" class="form-input" placeholder="输入新密码（至少 8 位）">
+                <input type="password" id="sec-new-password" class="form-input" data-i18n-placeholder="dash.newPasswordPlaceholder" placeholder="输入新密码（至少 8 位）">
                 <button type="button" class="password-toggle" onclick="togglePassword('sec-new-password', this)"></button>
               </div>
               <div class="password-strength">
@@ -139,16 +142,16 @@
               </div>
               <div class="strength-text"></div>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:auto;">更新密码</button>
+            <button type="submit" class="btn btn-primary" style="width:auto;" data-i18n="dash.updatePassword">更新密码</button>
           </form>
         </div>
 
         <div class="card" id="verify-card">
-          <div class="card-header"><h3>邮箱验证</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
+          <div class="card-header"><h3 data-i18n="dash.emailVerify">邮箱验证</h3></div>
+          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;" data-i18n="dash.emailVerifyDesc">
             验证您的邮箱地址以确保账户安全。
           </p>
-          <button id="send-verify-btn" class="btn btn-secondary btn-sm" onclick="sendVerification()">发送验证邮件</button>
+          <button id="send-verify-btn" class="btn btn-secondary btn-sm" onclick="sendVerification()" data-i18n="dash.sendVerifyEmail">发送验证邮件</button>
         </div>
       </div>
 
@@ -156,10 +159,10 @@
       <div class="page-section" id="tab-sessions">
         <div class="card">
           <div class="card-header">
-            <h3>活跃会话</h3>
+            <h3 data-i18n="dash.activeSessions">活跃会话</h3>
           </div>
           <ul class="session-list" id="session-list">
-            <li class="empty-state"><div class="icon">📱</div><p>加载会话中...</p></li>
+            <li class="empty-state"><div class="icon">📱</div><p data-i18n="dash.loadingSessions">加载会话中...</p></li>
           </ul>
         </div>
       </div>
@@ -167,12 +170,12 @@
       <!-- ===== Identities Tab ===== -->
       <div class="page-section" id="tab-identities">
         <div class="card">
-          <div class="card-header"><h3>关联身份</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;">
+          <div class="card-header"><h3 data-i18n="dash.linkedIdentities">关联身份</h3></div>
+          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;" data-i18n="dash.linkedIdentitiesDesc">
             管理通过第三方服务关联的身份。
           </p>
           <ul class="session-list" id="identities-list">
-            <li class="empty-state"><div class="icon">🔗</div><p>加载关联身份中...</p></li>
+            <li class="empty-state"><div class="icon">🔗</div><p data-i18n="dash.loadingIdentities">加载关联身份中...</p></li>
           </ul>
         </div>
       </div>
@@ -181,26 +184,26 @@
       <div class="page-section" id="tab-danger">
         <div class="card" style="border-color: rgba(198,40,40,0.3);">
           <div class="card-header">
-            <h3 style="color:var(--error);">危险操作</h3>
+            <h3 style="color:var(--error);" data-i18n="dash.dangerZone">危险操作</h3>
           </div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">
+          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;" data-i18n="dash.dangerDesc">
             以下操作不可撤销，请谨慎操作。
           </p>
 
           <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:1rem;">
             <div>
-              <h4 style="font-size:0.95rem;">禁用账户</h4>
-              <p style="font-size:0.8rem;color:var(--text-muted);">禁用后您将无法登录，但数据不会删除。</p>
+              <h4 style="font-size:0.95rem;" data-i18n="dash.disableAccount">禁用账户</h4>
+              <p style="font-size:0.8rem;color:var(--text-muted);" data-i18n="dash.disableDesc">禁用后您将无法登录，但数据不会删除。</p>
             </div>
-            <button class="btn btn-danger btn-sm" onclick="confirmDisableAccount()">禁用账户</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDisableAccount()" data-i18n="dash.disableAccount">禁用账户</button>
           </div>
 
           <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:var(--bg);border-radius:var(--radius-sm);">
             <div>
-              <h4 style="font-size:0.95rem;">删除账户</h4>
-              <p style="font-size:0.8rem;color:var(--text-muted);">永久删除您的账户和所有相关数据。</p>
+              <h4 style="font-size:0.95rem;" data-i18n="dash.deleteAccount">删除账户</h4>
+              <p style="font-size:0.8rem;color:var(--text-muted);" data-i18n="dash.deleteDesc">永久删除您的账户和所有相关数据。</p>
             </div>
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()">删除账户</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()" data-i18n="dash.deleteAccount">删除账户</button>
           </div>
         </div>
       </div>
@@ -210,11 +213,11 @@
   <!-- Modal -->
   <div class="modal-overlay" id="confirm-modal">
     <div class="modal">
-      <h3 id="modal-title">确认操作</h3>
-      <p id="modal-message">您确定要执行此操作吗？</p>
+      <h3 id="modal-title" data-i18n="dash.confirmAction">确认操作</h3>
+      <p id="modal-message" data-i18n="dash.confirmMessage">您确定要执行此操作吗？</p>
       <div class="modal-actions">
-        <button class="btn btn-secondary btn-sm" onclick="closeModal()">取消</button>
-        <button class="btn btn-danger btn-sm" id="modal-confirm-btn" onclick="modalConfirmAction()">确认</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()" data-i18n="common.cancel">取消</button>
+        <button class="btn btn-danger btn-sm" id="modal-confirm-btn" onclick="modalConfirmAction()" data-i18n="common.confirm">确认</button>
       </div>
     </div>
   </div>
@@ -224,9 +227,13 @@
   <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     let currentUser = null;
     let pendingAction = null;
+
+    // Inject language switcher
+    document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
     // ===== Auth Guard =====
     (async () => {
@@ -255,25 +262,31 @@
       if (section) section.classList.add('active');
       if (navItem) navItem.classList.add('active');
 
-      const titles = {
-        profile: '个人信息', security: '安全设置', sessions: '活跃会话',
-        identities: '关联身份', danger: '危险操作'
+      const titleKeys = {
+        profile: 'dash.title.profile', security: 'dash.title.security', sessions: 'dash.title.sessions',
+        identities: 'dash.title.identities', danger: 'dash.title.danger'
       };
-      document.getElementById('page-title').textContent = titles[tabName] || '账户管理';
+      const titleKey = titleKeys[tabName] || 'dash.title.default';
+      document.getElementById('page-title').textContent = t(titleKey);
+      document.title = t(titleKey) + ' - We Apps Account';
     }
 
     // ===== Render Profile =====
     function renderProfile(user) {
       document.getElementById('info-user-id').textContent = user.$id;
-      document.getElementById('info-name').textContent = user.name || '未设置';
+      document.getElementById('info-name').textContent = user.name || t('dash.notSet');
       document.getElementById('info-email').textContent = user.email;
-      document.getElementById('info-created').textContent = new Date(user.$createdAt).toLocaleString('zh-CN');
+      document.getElementById('info-created').textContent = new Date(user.$createdAt).toLocaleString(getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US');
 
       const badge = document.getElementById('verify-badge');
       if (user.emailVerification) {
-        badge.textContent = '已验证';
+        badge.textContent = t('dash.verified');
         badge.style.background = 'var(--success-bg)';
         badge.style.color = 'var(--success)';
+      } else {
+        badge.textContent = t('dash.unverified');
+        badge.style.background = '';
+        badge.style.color = '';
       }
 
       // Show/hide verification banner
@@ -290,7 +303,9 @@
         verifyCard.style.display = user.emailVerification ? 'none' : 'block';
       }
 
-      document.getElementById('user-name-display').textContent = user.name || user.email;
+      const nameDisplay = document.getElementById('user-name-display');
+      nameDisplay.textContent = user.name || user.email;
+      nameDisplay.removeAttribute('data-i18n');
       document.getElementById('avatar-initial').textContent = (user.name || user.email).charAt(0).toUpperCase();
       document.getElementById('new-name').value = user.name || '';
     }
@@ -304,9 +319,9 @@
         const result = await account.updateName(name);
         currentUser = result;
         renderProfile(result);
-        showToast('姓名已更新', 'success');
+        showToast(t('msg.nameUpdated'), 'success');
       } catch (err) {
-        showToast(err.message || '更新失败', 'error');
+        showToast(err.message || t('msg.updateFailed'), 'error');
       }
     });
 
@@ -315,14 +330,14 @@
       e.preventDefault();
       const email = document.getElementById('new-email').value.trim();
       const password = document.getElementById('email-password').value;
-      if (!email || !validateEmail(email)) { showToast('请输入有效邮箱', 'error'); return; }
-      if (!password) { showToast('请输入当前密码', 'error'); return; }
+      if (!email || !validateEmail(email)) { showToast(t('msg.invalidEmail'), 'error'); return; }
+      if (!password) { showToast(t('msg.enterPassword'), 'error'); return; }
       try {
         await account.updateEmail(email, password);
-        showToast('邮箱已更新，请重新登录', 'success');
+        showToast(t('msg.emailUpdated'), 'success');
         setTimeout(() => { account.deleteSession('current'); navigateTo('index.html'); }, 1500);
       } catch (err) {
-        showToast(err.message || '更新失败', 'error');
+        showToast(err.message || t('msg.updateFailed'), 'error');
       }
     });
 
@@ -331,15 +346,15 @@
       e.preventDefault();
       const oldPassword = document.getElementById('sec-old-password').value;
       const newPassword = document.getElementById('sec-new-password').value;
-      if (!oldPassword || !newPassword) { showToast('请填写所有字段', 'error'); return; }
-      if (!validatePassword(newPassword)) { showToast('新密码至少 8 位', 'error'); return; }
+      if (!oldPassword || !newPassword) { showToast(t('msg.fillAllFields'), 'error'); return; }
+      if (!validatePassword(newPassword)) { showToast(t('msg.passwordMin8'), 'error'); return; }
       try {
         await account.updatePassword(newPassword, oldPassword);
-        showToast('密码已更新', 'success');
+        showToast(t('msg.passwordUpdated'), 'success');
         document.getElementById('sec-old-password').value = '';
         document.getElementById('sec-new-password').value = '';
       } catch (err) {
-        showToast(err.message || '更新失败', 'error');
+        showToast(err.message || t('msg.updateFailed'), 'error');
       }
     });
 
@@ -353,40 +368,40 @@
         const result = await account.listSessions();
         const list = document.getElementById('session-list');
         if (!result.sessions || result.sessions.length === 0) {
-          list.innerHTML = '<li class="empty-state"><div class="icon">📱</div><p>暂无活跃会话</p></li>';
+          list.innerHTML = `<li class="empty-state"><div class="icon">📱</div><p>${t('dash.noSessions')}</p></li>`;
           return;
         }
         list.innerHTML = result.sessions.map(s => {
           const isCurrent = s.current;
-          const device = s.deviceName || s.deviceType || '未知设备';
+          const device = s.deviceName || s.deviceType || t('dash.unknownDevice');
           const os = s.osName ? `${s.osName} ${s.osVersion}` : '';
           const browser = s.clientName ? `${s.clientName} ${s.clientVersion}` : '';
           const ip = s.ip || '';
-          const loginTime = new Date(s.$createdAt).toLocaleString('zh-CN');
+          const loginTime = new Date(s.$createdAt).toLocaleString(getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US');
           return `
             <li class="session-item ${isCurrent ? 'current' : ''}">
               <div class="session-info">
-                <h4>${device} ${isCurrent ? '<span style="color:var(--success);font-size:0.8rem;">(当前)</span>' : ''}</h4>
+                <h4>${device} ${isCurrent ? `<span style="color:var(--success);font-size:0.8rem;">${t('dash.current')}</span>` : ''}</h4>
                 <p>${[os, browser, ip].filter(Boolean).join(' · ')}</p>
               </div>
               <div class="session-meta">
                 <div class="time">${loginTime}</div>
-                ${!isCurrent ? `<button class="btn btn-ghost btn-sm" style="margin-top:0.25rem;" onclick="deleteSession('${s.$id}')">删除</button>` : ''}
+                ${!isCurrent ? `<button class="btn btn-ghost btn-sm" style="margin-top:0.25rem;" onclick="deleteSession('${s.$id}')">${t('dash.delete')}</button>` : ''}
               </div>
             </li>`;
         }).join('');
       } catch (err) {
-        document.getElementById('session-list').innerHTML = '<li class="empty-state"><div class="icon">️</div><p>加载失败</p></li>';
+        document.getElementById('session-list').innerHTML = `<li class="empty-state"><div class="icon">️</div><p>${t('dash.loadFailed')}</p></li>`;
       }
     }
 
     async function deleteSession(sessionId) {
       try {
         await account.deleteSession(sessionId);
-        showToast('会话已删除', 'success');
+        showToast(t('msg.sessionDeleted'), 'success');
         loadSessions();
       } catch (err) {
-        showToast(err.message || '删除失败', 'error');
+        showToast(err.message || t('msg.deleteFailed'), 'error');
       }
     }
 
@@ -396,22 +411,22 @@
         const result = await account.listIdentities();
         const list = document.getElementById('identities-list');
         if (!result.identities || result.identities.length === 0) {
-          list.innerHTML = '<li class="empty-state"><div class="icon">🔗</div><p>暂无关联身份</p></li>';
+          list.innerHTML = `<li class="empty-state"><div class="icon">🔗</div><p>${t('dash.noIdentities')}</p></li>`;
           return;
         }
         list.innerHTML = result.identities.map(id => `
           <li class="session-item">
             <div class="session-info">
-              <h4>${id.provider || '未知'}</h4>
+              <h4>${id.provider || t('dash.unknown')}</h4>
               <p>${id.providerUid || ''} · ${id.providerEmail || ''}</p>
             </div>
             <div class="session-meta">
-              <div class="time">${new Date(id.$createdAt).toLocaleString('zh-CN')}</div>
+              <div class="time">${new Date(id.$createdAt).toLocaleString(getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US')}</div>
             </div>
           </li>
         `).join('');
       } catch (err) {
-        document.getElementById('identities-list').innerHTML = '<li class="empty-state"><div class="icon">⚠️</div><p>加载失败</p></li>';
+        document.getElementById('identities-list').innerHTML = `<li class="empty-state"><div class="icon">⚠️</div><p>${t('dash.loadFailed')}</p></li>`;
       }
     }
 
@@ -419,9 +434,9 @@
     async function sendVerification() {
       try {
         await account.createVerification(new URL('verify.html', window.location.href).toString());
-        showToast('验证邮件已发送', 'success');
+        showToast(t('msg.verificationSent'), 'success');
       } catch (err) {
-        showToast(err.message || '发送失败', 'error');
+        showToast(err.message || t('msg.sendFailed'), 'error');
       }
     }
 
@@ -430,13 +445,13 @@
       pendingAction = async () => {
         try {
           await account.updateStatus();
-          showToast('账户已禁用', 'info');
+          showToast(t('msg.accountDisabled'), 'info');
           setTimeout(() => navigateTo('index.html'), 1500);
         } catch (err) {
-          showToast(err.message || '操作失败', 'error');
+          showToast(err.message || t('msg.operationFailed'), 'error');
         }
       };
-      showModal('禁用账户', '禁用后您将无法登录。此操作需要重新联系客服才能恢复。确定继续吗？');
+      showModal(t('dash.confirmDisable'), t('dash.confirmDisableMsg'));
     }
 
     function confirmDeleteAccount() {
@@ -445,19 +460,19 @@
           await account.deleteIdentity('');  // This won't work directly
           // Appwrite web SDK doesn't have direct account deletion from client
           // Users need to use the server API or console
-          showToast('请联系管理员删除账户', 'info');
+          showToast(t('msg.contactAdmin'), 'info');
         } catch (err) {
-          showToast('客户端无法直接删除账户，请联系管理员', 'error');
+          showToast(t('msg.cannotDelete'), 'error');
         }
       };
-      showModal('删除账户', '此操作将永久删除您的账户和所有数据，且不可恢复。确定继续吗？');
+      showModal(t('dash.confirmDelete'), t('dash.confirmDeleteMsg'));
     }
 
     // ===== Logout =====
     async function logout() {
       try {
         await account.deleteSession('current');
-        showToast('已退出登录', 'info');
+        showToast(t('msg.loggedOut'), 'info');
         setTimeout(() => navigateTo('index.html'), 500);
       } catch (err) {
         navigateTo('index.html');

@@ -3,47 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>注册 - We Apps Account</title>
+  <title data-i18n-page-title="register.title">注册 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    .auth-left-content .features {
-      margin-top: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      text-align: left;
-    }
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.95rem;
-    }
-    .feature-item .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      flex-shrink: 0;
-    }
-  </style>
 </head>
 <body>
+  <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
   <div class="auth-layout">
     <!-- Left Panel -->
     <div class="auth-left">
       <div class="auth-left-content">
         <img src="assets/We.png" alt="We Apps" class="logo-large">
-        <h1>加入 We Apps</h1>
-        <p>创建您的账户，开启无限可能</p>
-        <div class="features">
-          <div class="feature-item"><span class="dot"></span>免费创建，即刻使用</div>
-          <div class="feature-item"><span class="dot"></span>安全可靠的账户保护</div>
-          <div class="feature-item"><span class="dot"></span>无缝连接所有 We Apps 服务</div>
-        </div>
+        <h1 data-i18n="register.heading">加入 We Apps</h1>
+        <p data-i18n="register.tagline">创建您的账户，开启无限可能</p>
       </div>
     </div>
 
@@ -51,26 +24,26 @@
     <div class="auth-right">
       <div class="auth-card">
         <img src="assets/We.png" alt="We" class="logo-small">
-        <h2>创建账户</h2>
-        <p class="subtitle">注册 We Apps 账户</p>
+        <h2 data-i18n="register.createAccount">创建账户</h2>
+        <p class="subtitle" data-i18n="register.subtitle">注册 We Apps 账户</p>
 
         <div id="register-alert" class="alert"></div>
 
         <form id="register-form" novalidate>
           <div class="form-group">
-            <label for="name">姓名</label>
-            <input type="text" id="name" class="form-input" placeholder="您的姓名（可选）" autocomplete="name">
+            <label for="name" data-i18n="register.nameLabel">姓名</label>
+            <input type="text" id="name" class="form-input" data-i18n-placeholder="register.namePlaceholder" placeholder="您的姓名（可选）" autocomplete="name">
           </div>
 
           <div class="form-group">
-            <label for="email">电子邮件 <span class="required">*</span></label>
-            <input type="email" id="email" class="form-input" placeholder="name@example.com" required autocomplete="email">
+            <label for="email" data-i18n="register.emailLabel">电子邮件 <span class="required">*</span></label>
+            <input type="email" id="email" class="form-input" data-i18n-placeholder="register.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
           </div>
 
           <div class="form-group">
-            <label for="password">密码 <span class="required">*</span></label>
+            <label for="password" data-i18n="register.passwordLabel">密码 <span class="required">*</span></label>
             <div class="password-wrapper">
-              <input type="password" id="password" class="form-input" placeholder="至少 8 个字符" required autocomplete="new-password">
+              <input type="password" id="password" class="form-input" data-i18n-placeholder="register.passwordPlaceholder" placeholder="至少 8 个字符" required autocomplete="new-password">
               <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性">👁</button>
             </div>
             <div class="password-strength">
@@ -84,27 +57,27 @@
           </div>
 
           <div class="form-group">
-            <label for="confirm-password">确认密码 <span class="required">*</span></label>
+            <label for="confirm-password" data-i18n="register.confirmPasswordLabel">确认密码 <span class="required">*</span></label>
             <div class="password-wrapper">
-              <input type="password" id="confirm-password" class="form-input" placeholder="再次输入密码" required autocomplete="new-password">
+              <input type="password" id="confirm-password" class="form-input" data-i18n-placeholder="register.confirmPasswordPlaceholder" placeholder="再次输入密码" required autocomplete="new-password">
               <button type="button" class="password-toggle" onclick="togglePassword('confirm-password', this)" aria-label="切换密码可见性">👁</button>
             </div>
-            <div class="form-error" id="password-match-error">两次输入的密码不一致</div>
+            <div class="form-error" id="password-match-error" data-i18n="register.passwordMismatch">两次输入的密码不一致</div>
           </div>
 
           <div class="checkbox-group">
             <input type="checkbox" id="terms" required>
-            <label for="terms">我已阅读并同意 <a href="#">服务条款</a> 和 <a href="#">隐私政策</a></label>
+            <label for="terms"><span data-i18n="register.termsText">我已阅读并同意</span> <a href="#" data-i18n="register.termsLink">服务条款</a> <span data-i18n="register.and">和</span> <a href="#" data-i18n="register.privacyLink">隐私政策</a></label>
           </div>
 
           <button type="submit" id="register-btn" class="btn btn-primary">
             <span class="spinner"></span>
-            <span class="btn-text">创建账户</span>
+            <span class="btn-text" data-i18n="register.registerBtn">创建账户</span>
           </button>
         </form>
 
         <div class="auth-footer">
-          已有账户？<a href="index.html">立即登录</a>
+          <span data-i18n="register.hasAccount">已有账户？</span> <a href="index.html" data-i18n="register.login">立即登录</a>
         </div>
       </div>
     </div>
@@ -115,7 +88,11 @@
   <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
+    // Inject language switcher
+    document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
+
     // Password strength
     document.getElementById('password').addEventListener('input', (e) => {
       updatePasswordStrength(e.target.value);
@@ -133,12 +110,12 @@
 
       // Validation
       if (!email || !validateEmail(email)) {
-        showAlert('register-alert', '请输入有效的电子邮件地址', 'error');
+        showAlert('register-alert', t('register.invalidEmail'), 'error');
         return;
       }
 
       if (!password || !validatePassword(password)) {
-        showAlert('register-alert', '密码至少需要 8 个字符', 'error');
+        showAlert('register-alert', t('register.passwordMin8'), 'error');
         return;
       }
 
@@ -150,7 +127,7 @@
       }
 
       if (!terms) {
-        showAlert('register-alert', '请同意服务条款和隐私政策', 'error');
+        showAlert('register-alert', t('register.acceptTerms'), 'error');
         return;
       }
 
@@ -166,15 +143,15 @@
 
         // Auto-login after registration
         await account.createEmailPasswordSession(email, password);
-        showToast('注册成功！', 'success');
+        showToast(t('register.success'), 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {
         const messages = {
-          'user_already_exists': '该电子邮件已被注册',
-          'general_rate_limit_exceeded': '请求过于频繁，请稍后再试',
-          'user_password_mismatch': '密码不符合安全要求',
+          'user_already_exists': t('register.emailExists'),
+          'general_rate_limit_exceeded': t('register.rateLimit'),
+          'user_password_mismatch': t('register.passwordWeak'),
         };
-        const msg = messages[err.type] || err.message || '注册失败，请重试';
+        const msg = messages[err.type] || err.message || t('register.registerFailed');
         showAlert('register-alert', msg, 'error');
       } finally {
         setLoading('register-btn', false);

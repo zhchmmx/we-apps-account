@@ -87,7 +87,7 @@ function updatePasswordStrength(password) {
   
   const score = checkPasswordStrength(password);
   const levels = ['', 'weak', 'medium', 'medium', 'strong', 'strong'];
-  const labels = ['', '弱', '中等', '中等', '强', '非常强'];
+  const labels = ['', t('strength.1'), t('strength.2'), t('strength.3'), t('strength.4'), t('strength.5')];
   
   bars.forEach((bar, i) => {
     bar.className = 'strength-bar';
