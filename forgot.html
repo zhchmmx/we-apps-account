@@ -121,10 +121,10 @@
       setLoading('forgot-btn', true);
 
       try {
-        await account.createRecovery({
+        await account.createRecovery(
           email,
-          url: window.location.origin + window.location.pathname
-        });
+          window.location.origin + window.location.pathname
+        );
         showAlert('forgot-alert', '重置链接已发送到您的邮箱，请查收邮件', 'success');
         showToast('请检查您的邮箱', 'info');
       } catch (err) {
@@ -162,11 +162,7 @@
       setLoading('reset-btn', true);
 
       try {
-        await account.updateRecovery({
-          userId: uid,
-          secret: sec,
-          password: newPassword
-        });
+        await account.updateRecovery(uid, sec, newPassword);
         showToast('密码重置成功！', 'success');
         setTimeout(() => navigateTo('index.html'), 1500);
       } catch (err) {

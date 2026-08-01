@@ -125,7 +125,7 @@
       setLoading('login-btn', true);
 
       try {
-        await account.createEmailPasswordSession({ email, password });
+        await account.createEmailPasswordSession(email, password);
         showToast('登录成功，正在跳转...', 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {

@@ -118,7 +118,7 @@ function navigateTo(page) {
 
 // Check if user is already logged in
 async function checkAuth() {
-  if (!account) return null;
+  if (!account && !initAppwrite()) return null;
   try {
     return await account.get();
   } catch (e) {

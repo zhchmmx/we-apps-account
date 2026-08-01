@@ -441,7 +441,7 @@
       const name = document.getElementById('new-name').value.trim();
       if (!name) return;
       try {
-        const result = await account.updateName({ name });
+        const result = await account.updateName(name);
         currentUser = result;
         renderProfile(result);
         showToast('姓名已更新', 'success');
@@ -458,7 +458,7 @@
       if (!email || !validateEmail(email)) { showToast('请输入有效邮箱', 'error'); return; }
       if (!password) { showToast('请输入当前密码', 'error'); return; }
       try {
-        await account.updateEmail({ email, password });
+        await account.updateEmail(email, password);
         showToast('邮箱已更新，请重新登录', 'success');
         setTimeout(() => { account.deleteSession('current'); navigateTo('index.html'); }, 1500);
       } catch (err) {
@@ -474,7 +474,7 @@
       if (!oldPassword || !newPassword) { showToast('请填写所有字段', 'error'); return; }
       if (!validatePassword(newPassword)) { showToast('新密码至少 8 位', 'error'); return; }
       try {
-        await account.updatePassword({ password: newPassword, oldPassword });
+        await account.updatePassword(newPassword, oldPassword);
         showToast('密码已更新', 'success');
         document.getElementById('old-password').value = '';
         document.getElementById('new-password').value = '';
@@ -491,7 +491,7 @@
       if (!oldPassword || !newPassword) { showToast('请填写所有字段', 'error'); return; }
       if (!validatePassword(newPassword)) { showToast('新密码至少 8 位', 'error'); return; }
       try {
-        await account.updatePassword({ password: newPassword, oldPassword });
+        await account.updatePassword(newPassword, oldPassword);
         showToast('密码已更新', 'success');
         document.getElementById('sec-old-password').value = '';
         document.getElementById('sec-new-password').value = '';
@@ -512,7 +512,7 @@
       if (!phone) { showToast('请输入手机号', 'error'); return; }
       if (!password) { showToast('请输入当前密码', 'error'); return; }
       try {
-        await account.updatePhone({ phone, password });
+        await account.updatePhone(phone, password);
         currentUser.phone = phone;
         renderProfile(currentUser);
         showToast('手机号已更新', 'success');
@@ -608,7 +608,7 @@
     // ===== MFA =====
     async function enableMFA() {
       try {
-        await account.updateMFA({ mfa: true });
+        await account.updateMFA(true);
         document.getElementById('mfa-dot').className = 'status-dot enabled';
         document.getElementById('mfa-status-text').textContent = 'MFA 已启用';
         showToast('MFA 已启用', 'success');
@@ -619,7 +619,7 @@
 
     async function disableMFA() {
       try {
-        await account.updateMFA({ mfa: false });
+        await account.updateMFA(false);
         document.getElementById('mfa-dot').className = 'status-dot disabled';
         document.getElementById('mfa-status-text').textContent = 'MFA 未启用';
         showToast('MFA 已禁用', 'success');
@@ -631,7 +631,7 @@
     async function createMFAAuthenticator() {
       try {
         const type = document.getElementById('mfa-type').value;
-        const result = await account.createMFAAuthenticator({ type });
+        const result = await account.createMfaAuthenticator(type);
         document.getElementById('mfa-setup-area').style.display = 'block';
         document.getElementById('mfa-qr-area').style.display = 'block';
         document.getElementById('mfa-qr-display').innerHTML = `
@@ -652,7 +652,7 @@
       const type = document.getElementById('mfa-type').value;
       if (!otp) { showToast('请输入验证码', 'error'); return; }
       try {
-        await account.updateMFAAuthenticator({ type, otp });
+        await account.updateMfaAuthenticator(type, otp);
         showToast('验证器已添加', 'success');
       } catch (err) {
         showToast(err.message || '验证失败', 'error');
@@ -661,7 +661,7 @@
 
     async function createMFARecoveryCodes() {
       try {
-        const result = await account.createMFARecoveryCodes();
+        const result = await account.createMfaRecoveryCodes();
         document.getElementById('recovery-codes-display').style.display = 'block';
         document.getElementById('recovery-codes-text').textContent = (result.recoveryCodes || []).join('\n');
         showToast('恢复代码已生成，请妥善保管', 'success');
@@ -672,7 +672,7 @@
 
     async function getMFARecoveryCodes() {
       try {
-        const result = await account.getMFARecoveryCodes();
+        const result = await account.getMfaRecoveryCodes();
         document.getElementById('recovery-codes-display').style.display = 'block';
         document.getElementById('recovery-codes-text').textContent = (result.recoveryCodes || []).join('\n');
       } catch (err) {
@@ -686,7 +686,7 @@
       const otp = document.getElementById('mfa-challenge-otp').value;
       if (!factorId || !otp) { showToast('请填写所有字段', 'error'); return; }
       try {
-        await account.updateMFAChallenge({ challengeId: factorId, otp });
+        await account.updateMfaChallenge(factorId, otp);
         showToast('MFA 验证成功', 'success');
       } catch (err) {
         showToast(err.message || '验证失败', 'error');
@@ -710,7 +710,7 @@
       try {
         const prefs = JSON.parse(jsonStr);
         if (typeof prefs !== 'object' || Array.isArray(prefs)) throw new Error('必须是 JSON 对象');
-        await account.updatePrefs({ prefs });
+        await account.updatePrefs(prefs);
         document.getElementById('prefs-display').textContent = JSON.stringify(prefs, null, 2);
         showToast('偏好设置已保存', 'success');
       } catch (err) {
@@ -750,7 +750,7 @@
     // ===== Verification =====
     async function sendVerification() {
       try {
-        await account.createVerification();
+        await account.createVerification(new URL('verify.html', window.location.href).toString());
         showToast('验证邮件已发送', 'success');
       } catch (err) {
         showToast(err.message || '发送失败', 'error');
