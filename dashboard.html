@@ -82,16 +82,8 @@
               <div class="value" id="info-email">-</div>
             </div>
             <div class="info-item">
-              <div class="label">电话</div>
-              <div class="value" id="info-phone">未设置</div>
-            </div>
-            <div class="info-item">
               <div class="label">注册时间</div>
               <div class="value" id="info-created">-</div>
-            </div>
-            <div class="info-item">
-              <div class="label">邮箱验证</div>
-              <div class="value" id="info-verified">-</div>
             </div>
           </div>
         </div>
@@ -276,9 +268,7 @@
       document.getElementById('info-user-id').textContent = user.$id;
       document.getElementById('info-name').textContent = user.name || '未设置';
       document.getElementById('info-email').textContent = user.email;
-      document.getElementById('info-phone').textContent = user.phone || '未设置';
       document.getElementById('info-created').textContent = new Date(user.$createdAt).toLocaleString('zh-CN');
-      document.getElementById('info-verified').textContent = user.emailVerification ? '已验证 ✓' : '未验证';
 
       const badge = document.getElementById('verify-badge');
       if (user.emailVerification) {
