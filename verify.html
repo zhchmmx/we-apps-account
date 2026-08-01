@@ -70,6 +70,38 @@
     if (userId) document.getElementById('user-id').value = userId;
     if (secret) document.getElementById('secret').value = secret;
 
+    // Auto-verify if both params are present (clicked from email link)
+    if (userId && secret) {
+      (async () => {
+        const btn = document.getElementById('verify-btn');
+        const form = document.getElementById('verify-form');
+        form.style.display = 'none';
+        document.querySelector('.divider').style.display = 'none';
+        document.getElementById('resend-btn').style.display = 'none';
+        document.querySelector('.subtitle').textContent = '正在验证您的邮箱，请稍候...';
+
+        try {
+          await account.updateVerification(userId, secret);
+          document.querySelector('.subtitle').textContent = '邮箱验证成功！正在跳转...';
+          document.querySelector('.subtitle').style.color = 'var(--success)';
+          showToast('邮箱验证成功！', 'success');
+          setTimeout(() => navigateTo('dashboard.html'), 1500);
+        } catch (err) {
+          const messages = {
+            'general_invalid_response': '验证码无效或已过期',
+            'general_rate_limit_exceeded': '请求过于频繁，请稍后再试',
+          };
+          const msg = messages[err.type] || err.message || '验证失败，请重试';
+          document.querySelector('.subtitle').textContent = msg;
+          document.querySelector('.subtitle').style.color = 'var(--error)';
+          // Show form again so user can retry manually or resend
+          form.style.display = 'block';
+          document.querySelector('.divider').style.display = 'flex';
+          document.getElementById('resend-btn').style.display = 'inline-flex';
+        }
+      })();
+    }
+
     document.getElementById('verify-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert('verify-alert');

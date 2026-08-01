@@ -924,6 +924,37 @@ a:hover {
   }
 }
 
+/* ===== Verification Banner ===== */
+.verify-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid rgba(245, 127, 23, 0.25);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease;
+}
+
+.verify-banner.visible {
+  display: flex;
+}
+
+.verify-banner .banner-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.verify-banner .btn {
+  flex-shrink: 0;
+}
+
 /* ===== Page Transitions ===== */
 .page-section {
   display: none;

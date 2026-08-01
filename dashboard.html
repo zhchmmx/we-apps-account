@@ -19,7 +19,7 @@
       <nav class="sidebar-nav">
         <div class="nav-section-title">账户</div>
         <a class="nav-item active" data-tab="profile" onclick="switchTab('profile')">
-          <span class="icon"></span> 个人信息
+          <span class="icon">👤</span> 个人信息
         </a>
         <a class="nav-item" data-tab="security" onclick="switchTab('security')">
           <span class="icon">🔒</span> 安全设置
@@ -27,16 +27,7 @@
         <a class="nav-item" data-tab="sessions" onclick="switchTab('sessions')">
           <span class="icon">📱</span> 活跃会话
         </a>
-        <a class="nav-item" data-tab="logs" onclick="switchTab('logs')">
-          <span class="icon">📋</span> 安全日志
-        </a>
         <div class="nav-section-title">高级</div>
-        <a class="nav-item" data-tab="mfa" onclick="switchTab('mfa')">
-          <span class="icon"></span> 多因素认证
-        </a>
-        <a class="nav-item" data-tab="preferences" onclick="switchTab('preferences')">
-          <span class="icon">⚙️</span> 偏好设置
-        </a>
         <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
           <span class="icon">🔗</span> 关联身份
         </a>
@@ -59,6 +50,15 @@
           <div class="user-avatar" id="avatar-initial">W</div>
           <span id="user-name-display">加载中...</span>
         </div>
+      </div>
+
+      <!-- Verification Banner -->
+      <div class="verify-banner" id="verify-banner">
+        <div class="banner-text">
+          <span>⚠️</span>
+          <span>您的邮箱尚未验证，部分功能可能受限。</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="sendVerification()">立即验证</button>
       </div>
 
       <!-- ===== Profile Tab ===== -->
@@ -118,40 +118,6 @@
             <button type="submit" class="btn btn-secondary btn-sm">更新</button>
           </form>
         </div>
-
-        <div class="card">
-          <div class="card-header"><h3>修改密码</h3></div>
-          <form id="update-password-form">
-            <div class="form-group">
-              <label>当前密码</label>
-              <div class="password-wrapper">
-                <input type="password" id="old-password" class="form-input" placeholder="输入当前密码">
-                <button type="button" class="password-toggle" onclick="togglePassword('old-password', this)">👁</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>新密码</label>
-              <div class="password-wrapper">
-                <input type="password" id="new-password" class="form-input" placeholder="输入新密码（至少 8 位）">
-                <button type="button" class="password-toggle" onclick="togglePassword('new-password', this)">👁</button>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-secondary btn-sm">更新密码</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><h3>修改手机号</h3></div>
-          <form id="update-phone-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
-            <div class="form-group" style="flex:1;margin-bottom:0;">
-              <input type="tel" id="new-phone" class="form-input" placeholder="+86 13800138000">
-            </div>
-            <div class="form-group" style="width:200px;margin-bottom:0;">
-              <input type="password" id="phone-password" class="form-input" placeholder="当前密码">
-            </div>
-            <button type="submit" class="btn btn-secondary btn-sm">更新</button>
-          </form>
-        </div>
       </div>
 
       <!-- ===== Security Tab ===== -->
@@ -185,7 +151,7 @@
           </form>
         </div>
 
-        <div class="card">
+        <div class="card" id="verify-card">
           <div class="card-header"><h3>邮箱验证</h3></div>
           <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
             验证您的邮箱地址以确保账户安全。
@@ -204,112 +170,6 @@
           <ul class="session-list" id="session-list">
             <li class="empty-state"><div class="icon">📱</div><p>加载会话中...</p></li>
           </ul>
-        </div>
-      </div>
-
-      <!-- ===== Logs Tab ===== -->
-      <div class="page-section" id="tab-logs">
-        <div class="card">
-          <div class="card-header"><h3>安全日志</h3></div>
-          <ul class="log-list" id="log-list">
-            <li class="empty-state"><div class="icon">📋</div><p>加载日志中...</p></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- ===== MFA Tab ===== -->
-      <div class="page-section" id="tab-mfa">
-        <div class="card">
-          <div class="card-header"><h3>多因素认证 (MFA)</h3></div>
-          <div class="mfa-status">
-            <div class="status-dot disabled" id="mfa-dot"></div>
-            <span id="mfa-status-text">MFA 未启用</span>
-          </div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;">
-            启用多因素认证可以为您的账户增加额外的安全保护。
-          </p>
-          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="enableMFA()">启用 MFA</button>
-            <button class="btn btn-secondary btn-sm" onclick="disableMFA()">禁用 MFA</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><h3>添加验证器</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
-            使用 TOTP 验证器应用（如 Google Authenticator）来增强安全性。
-          </p>
-          <div id="mfa-setup-area" style="display:none;">
-            <div class="form-group">
-              <label>验证器类型</label>
-              <select id="mfa-type" class="form-input">
-                <option value="totp">TOTP (推荐)</option>
-              </select>
-            </div>
-            <button class="btn btn-secondary btn-sm" onclick="createMFAAuthenticator()">生成验证器</button>
-            <div id="mfa-qr-area" style="margin-top:1rem;display:none;">
-              <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:0.75rem;">
-                请用验证器应用扫描下方二维码：
-              </p>
-              <div id="mfa-qr-display" style="padding:1rem;background:var(--bg);border-radius:var(--radius-sm);text-align:center;"></div>
-              <div class="form-group" style="margin-top:1rem;">
-                <label>输入验证码以确认</label>
-                <input type="text" id="mfa-otp" class="form-input" placeholder="6 位验证码">
-              </div>
-              <button class="btn btn-primary btn-sm" style="width:auto;" onclick="confirmMFAAuthenticator()">确认</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><h3>恢复代码</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
-            恢复代码可在您无法访问验证器时用于登录。请妥善保管。
-          </p>
-          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="createMFARecoveryCodes()">生成恢复代码</button>
-            <button class="btn btn-secondary btn-sm" onclick="getMFARecoveryCodes()">查看恢复代码</button>
-          </div>
-          <div id="recovery-codes-display" style="margin-top:1rem;display:none;">
-            <div style="padding:1rem;background:var(--bg);border-radius:var(--radius-sm);font-family:monospace;font-size:0.9rem;white-space:pre-wrap;" id="recovery-codes-text"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><h3>MFA 挑战</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
-            如果您正在完成 MFA 验证流程，请在此输入信息。
-          </p>
-          <form id="mfa-challenge-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
-            <div class="form-group" style="flex:1;margin-bottom:0;">
-              <input type="text" id="mfa-factor-id" class="form-input" placeholder="Factor ID">
-            </div>
-            <div class="form-group" style="width:200px;margin-bottom:0;">
-              <input type="text" id="mfa-challenge-otp" class="form-input" placeholder="OTP 验证码">
-            </div>
-            <button type="submit" class="btn btn-secondary btn-sm">验证</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- ===== Preferences Tab ===== -->
-      <div class="page-section" id="tab-preferences">
-        <div class="card">
-          <div class="card-header"><h3>账户偏好设置</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;">
-            自定义您的账户偏好。这些设置会以键值对形式存储。
-          </p>
-          <div id="current-prefs" style="margin-bottom:1.5rem;">
-            <div style="padding:1rem;background:var(--bg);border-radius:var(--radius-sm);font-family:monospace;font-size:0.85rem;white-space:pre-wrap;" id="prefs-display">{}</div>
-          </div>
-          <form id="update-prefs-form">
-            <div class="form-group">
-              <label>偏好设置 (JSON 格式)</label>
-              <textarea id="prefs-json" class="form-input" rows="5" style="font-family:monospace;font-size:0.85rem;resize:vertical;" placeholder='{"language": "zh", "theme": "light"}'>{}</textarea>
-              <div class="form-hint">请输入有效的 JSON 对象</div>
-            </div>
-            <button type="submit" class="btn btn-secondary btn-sm">保存偏好</button>
-          </form>
         </div>
       </div>
 
@@ -390,9 +250,7 @@
     async function loadDashboard() {
       renderProfile(currentUser);
       loadSessions();
-      loadLogs();
       loadIdentities();
-      loadPrefs();
     }
 
     // ===== Tab Switching =====
@@ -408,7 +266,6 @@
 
       const titles = {
         profile: '个人信息', security: '安全设置', sessions: '活跃会话',
-        logs: '安全日志', mfa: '多因素认证', preferences: '偏好设置',
         identities: '关联身份', danger: '危险操作'
       };
       document.getElementById('page-title').textContent = titles[tabName] || '账户管理';
@@ -428,6 +285,20 @@
         badge.textContent = '已验证';
         badge.style.background = 'var(--success-bg)';
         badge.style.color = 'var(--success)';
+      }
+
+      // Show/hide verification banner
+      const banner = document.getElementById('verify-banner');
+      if (user.emailVerification) {
+        banner.classList.remove('visible');
+      } else {
+        banner.classList.add('visible');
+      }
+
+      // Hide email verification card in security tab if already verified
+      const verifyCard = document.getElementById('verify-card');
+      if (verifyCard) {
+        verifyCard.style.display = user.emailVerification ? 'none' : 'block';
       }
 
       document.getElementById('user-name-display').textContent = user.name || user.email;
@@ -466,23 +337,6 @@
       }
     });
 
-    // ===== Update Password (Profile tab) =====
-    document.getElementById('update-password-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const oldPassword = document.getElementById('old-password').value;
-      const newPassword = document.getElementById('new-password').value;
-      if (!oldPassword || !newPassword) { showToast('请填写所有字段', 'error'); return; }
-      if (!validatePassword(newPassword)) { showToast('新密码至少 8 位', 'error'); return; }
-      try {
-        await account.updatePassword(newPassword, oldPassword);
-        showToast('密码已更新', 'success');
-        document.getElementById('old-password').value = '';
-        document.getElementById('new-password').value = '';
-      } catch (err) {
-        showToast(err.message || '更新失败', 'error');
-      }
-    });
-
     // ===== Update Password (Security tab) =====
     document.getElementById('security-password-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -502,23 +356,6 @@
 
     document.getElementById('sec-new-password').addEventListener('input', (e) => {
       updatePasswordStrength(e.target.value);
-    });
-
-    // ===== Update Phone =====
-    document.getElementById('update-phone-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('new-phone').value.trim();
-      const password = document.getElementById('phone-password').value;
-      if (!phone) { showToast('请输入手机号', 'error'); return; }
-      if (!password) { showToast('请输入当前密码', 'error'); return; }
-      try {
-        await account.updatePhone(phone, password);
-        currentUser.phone = phone;
-        renderProfile(currentUser);
-        showToast('手机号已更新', 'success');
-      } catch (err) {
-        showToast(err.message || '更新失败', 'error');
-      }
     });
 
     // ===== Sessions =====
@@ -576,151 +413,6 @@
       };
       showModal('删除所有其他会话', '这将删除除当前设备外的所有活跃会话。确定继续吗？');
     }
-
-    // ===== Logs =====
-    async function loadLogs() {
-      try {
-        const result = await account.listLogs();
-        const list = document.getElementById('log-list');
-        if (!result.logs || result.logs.length === 0) {
-          list.innerHTML = '<li class="empty-state"><div class="icon"></div><p>暂无安全日志</p></li>';
-          return;
-        }
-        list.innerHTML = result.logs.map(log => {
-          const type = log.event ? log.event.split('.').pop() : 'unknown';
-          const iconClass = type.includes('login') ? 'login' : type.includes('logout') ? 'logout' : type.includes('delete') ? 'delete' : 'update';
-          const icons = { login: '🔑', logout: '🚪', update: '✏️', delete: '🗑' };
-          const time = new Date(log.$createdAt).toLocaleString('zh-CN');
-          return `
-            <li class="log-item">
-              <div class="log-icon ${iconClass}">${icons[iconClass] || '📌'}</div>
-              <div class="log-content">
-                <h4>${log.event || '未知事件'}</h4>
-                <p>${log.ip || ''} · ${time}</p>
-              </div>
-            </li>`;
-        }).join('');
-      } catch (err) {
-        document.getElementById('log-list').innerHTML = '<li class="empty-state"><div class="icon">⚠️</div><p>加载失败</p></li>';
-      }
-    }
-
-    // ===== MFA =====
-    async function enableMFA() {
-      try {
-        await account.updateMFA(true);
-        document.getElementById('mfa-dot').className = 'status-dot enabled';
-        document.getElementById('mfa-status-text').textContent = 'MFA 已启用';
-        showToast('MFA 已启用', 'success');
-      } catch (err) {
-        showToast(err.message || '操作失败', 'error');
-      }
-    }
-
-    async function disableMFA() {
-      try {
-        await account.updateMFA(false);
-        document.getElementById('mfa-dot').className = 'status-dot disabled';
-        document.getElementById('mfa-status-text').textContent = 'MFA 未启用';
-        showToast('MFA 已禁用', 'success');
-      } catch (err) {
-        showToast(err.message || '操作失败', 'error');
-      }
-    }
-
-    async function createMFAAuthenticator() {
-      try {
-        const type = document.getElementById('mfa-type').value;
-        const result = await account.createMfaAuthenticator(type);
-        document.getElementById('mfa-setup-area').style.display = 'block';
-        document.getElementById('mfa-qr-area').style.display = 'block';
-        document.getElementById('mfa-qr-display').innerHTML = `
-          <p style="font-size:0.85rem;color:var(--text-secondary);">
-            密钥: <code style="background:var(--surface);padding:0.25rem 0.5rem;border-radius:4px;">${result.secret || 'N/A'}</code>
-          </p>
-          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">
-            URI: ${result.uri || 'N/A'}
-          </p>
-        `;
-      } catch (err) {
-        showToast(err.message || '操作失败', 'error');
-      }
-    }
-
-    async function confirmMFAAuthenticator() {
-      const otp = document.getElementById('mfa-otp').value;
-      const type = document.getElementById('mfa-type').value;
-      if (!otp) { showToast('请输入验证码', 'error'); return; }
-      try {
-        await account.updateMfaAuthenticator(type, otp);
-        showToast('验证器已添加', 'success');
-      } catch (err) {
-        showToast(err.message || '验证失败', 'error');
-      }
-    }
-
-    async function createMFARecoveryCodes() {
-      try {
-        const result = await account.createMfaRecoveryCodes();
-        document.getElementById('recovery-codes-display').style.display = 'block';
-        document.getElementById('recovery-codes-text').textContent = (result.recoveryCodes || []).join('\n');
-        showToast('恢复代码已生成，请妥善保管', 'success');
-      } catch (err) {
-        showToast(err.message || '操作失败', 'error');
-      }
-    }
-
-    async function getMFARecoveryCodes() {
-      try {
-        const result = await account.getMfaRecoveryCodes();
-        document.getElementById('recovery-codes-display').style.display = 'block';
-        document.getElementById('recovery-codes-text').textContent = (result.recoveryCodes || []).join('\n');
-      } catch (err) {
-        showToast(err.message || '获取失败', 'error');
-      }
-    }
-
-    document.getElementById('mfa-challenge-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const factorId = document.getElementById('mfa-factor-id').value;
-      const otp = document.getElementById('mfa-challenge-otp').value;
-      if (!factorId || !otp) { showToast('请填写所有字段', 'error'); return; }
-      try {
-        await account.updateMfaChallenge(factorId, otp);
-        showToast('MFA 验证成功', 'success');
-      } catch (err) {
-        showToast(err.message || '验证失败', 'error');
-      }
-    });
-
-    // ===== Preferences =====
-    async function loadPrefs() {
-      try {
-        const prefs = await account.getPrefs();
-        document.getElementById('prefs-display').textContent = JSON.stringify(prefs, null, 2);
-        document.getElementById('prefs-json').value = JSON.stringify(prefs, null, 2);
-      } catch (err) {
-        // Prefs may not exist yet
-      }
-    }
-
-    document.getElementById('update-prefs-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const jsonStr = document.getElementById('prefs-json').value.trim();
-      try {
-        const prefs = JSON.parse(jsonStr);
-        if (typeof prefs !== 'object' || Array.isArray(prefs)) throw new Error('必须是 JSON 对象');
-        await account.updatePrefs(prefs);
-        document.getElementById('prefs-display').textContent = JSON.stringify(prefs, null, 2);
-        showToast('偏好设置已保存', 'success');
-      } catch (err) {
-        if (err instanceof SyntaxError) {
-          showToast('JSON 格式无效', 'error');
-        } else {
-          showToast(err.message || '保存失败', 'error');
-        }
-      }
-    });
 
     // ===== Identities =====
     async function loadIdentities() {
