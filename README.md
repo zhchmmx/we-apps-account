@@ -95,6 +95,44 @@ we-apps-account/
 | 邮箱验证 | `verify.html` | 输入验证码完成邮箱验证 |
 | 仪表盘 | `dashboard.html` | 完整的账户管理界面 |
 
+## 客户端免登集成（JWT）
+
+桌面客户端中已登录的用户，点击"账户管理"按钮即可打开浏览器并自动登录本站点。
+
+### 1. 在 Appwrite Console 中开启 JWT
+
+**Auth → Security → JWT** 中启用 JWT 认证（默认关闭）。
+
+### 2. 客户端拼接并打开网址
+
+```
+https://<你的域名>/dashboard.html?jwt=<JWT>
+```
+
+客户端代码示例：
+
+```dart
+// Flutter
+final jwt = await account.createJWT();
+final url = 'https://your-domain/dashboard.html?jwt=${Uri.encodeComponent(jwt.jwt)}';
+await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+```
+
+```javascript
+// Electron / Node 环境（appwrite Web SDK）
+const jwt = await account.createJWT();
+const url = `https://your-domain/dashboard.html?jwt=${encodeURIComponent(jwt.jwt)}`;
+shell.openExternal(url);
+```
+
+### 3. 工作原理与限制
+
+- 网页端解析 `jwt` 参数后**立即从地址栏抹除**，然后 `client.setJWT(jwt)` 完成认证
+- ⚠️ JWT 有效期 **15 分钟**，过期后需从客户端重新打开
+- ⚠️ JWT 不落盘持久化，**刷新页面会掉线**（掉线后回到登录页）
+- ⚠️ JWT 不产生独立会话：网页端的"退出登录"只做页面跳转，**不会**影响客户端的登录状态
+- ⚠️ JWT 依附于客户端会话：客户端退出登录后，网页端 JWT 立即失效
+
 ## 设计说明
 
 - 对标 Adobe、Autodesk、Microsoft 等现代企业级界面风格

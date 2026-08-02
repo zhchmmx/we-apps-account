@@ -152,6 +152,10 @@ const translations = {
     'login.accountBlocked': '该账户已被禁用',
     'login.loginFailed': '登录失败，请重试',
 
+    // === Client Handoff (JWT) ===
+    'jwt.signingIn': '正在从客户端登录，请稍候...',
+    'jwt.failed': '登录链接无效或已过期，请从客户端重新打开，或使用邮箱密码登录',
+
     // === Register Page ===
     'register.title': '注册 - We Apps Account',
     'register.heading': '加入 We Apps',
@@ -386,6 +390,10 @@ const translations = {
     'login.rateLimit': 'Too many requests, please try again later',
     'login.accountBlocked': 'This account has been disabled',
     'login.loginFailed': 'Login failed, please try again',
+
+    // === Client Handoff (JWT) ===
+    'jwt.signingIn': 'Signing you in from the app, please wait...',
+    'jwt.failed': 'This sign-in link is invalid or expired. Please reopen it from the app, or sign in with email and password.',
 
     // === Register Page ===
     'register.title': 'Register - We Apps Account',

@@ -151,6 +151,66 @@ async function checkAuth() {
   }
 }
 
+// Decode JWT payload (no signature verification, read-only)
+function parseJwtPayload(jwt) {
+  try {
+    const part = jwt.split('.')[1];
+    const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(atob(base64).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Auto-login via ?jwt= URL parameter (handoff from the desktop client app).
+ *
+ * Flow:
+ * 1. Read jwt from the query string and immediately strip it from the
+ *    address bar so it never lingers in history / referrer.
+ * 2. client.setJWT(jwt) and verify with account.get().
+ * 3. If an existing browser session shadows the JWT identity (different
+ *    userId), delete that session and verify again.
+ *
+ * Note: JWT auth is short-lived (15 min) and is not a session - a page
+ * reload after expiry requires a fresh link from the client app.
+ *
+ * @returns {Promise<object|null>} the logged-in user object, or null
+ */
+async function loginWithUrlJwt() {
+  const params = new URLSearchParams(window.location.search);
+  const jwt = params.get('jwt');
+  if (!jwt) return null;
+
+  // Strip credentials from the URL immediately
+  params.delete('jwt');
+  const rest = params.toString();
+  window.history.replaceState(null, '', window.location.pathname + (rest ? '?' + rest : ''));
+
+  if (!account && !initAppwrite()) return null;
+
+  try {
+    client.setJWT(jwt);
+    let user = await account.get();
+
+    const expectedUserId = (parseJwtPayload(jwt) || {}).userId;
+    if (expectedUserId && user.$id !== expectedUserId) {
+      // An existing browser session shadowed the JWT identity - drop it
+      try { await account.deleteSession('current'); } catch (e) { /* ignore */ }
+      user = await account.get();
+    }
+
+    // JWT mode flag: 'current' session belongs to the client app.
+    // Pages must NOT delete it on behalf of the browser (logout etc.).
+    window.__weappsJwtAuth = true;
+    return user;
+  } catch (e) {
+    return null;
+  }
+}
+
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   if (!initAppwrite()) {

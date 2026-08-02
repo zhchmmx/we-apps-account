@@ -131,6 +131,17 @@
 
     // Auto-redirect if already logged in
     (async () => {
+      // Client-app handoff: opened with ?jwt= from the desktop app
+      if (new URLSearchParams(window.location.search).has('jwt')) {
+        showAlert('login-alert', t('jwt.signingIn'), 'info');
+        const user = await loginWithUrlJwt();
+        if (user) {
+          navigateTo('dashboard.html');
+        } else {
+          showAlert('login-alert', t('jwt.failed'), 'error');
+        }
+        return;
+      }
       const user = await checkAuth();
       if (user) navigateTo('dashboard.html');
     })();
