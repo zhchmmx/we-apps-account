@@ -404,6 +404,32 @@
     });
 
     // ===== Sessions =====
+    // Classify session type from Appwrite's UA-parsed fields.
+    // Note: raw UA is NOT exposed; Appwrite pre-parses it into
+    // clientType / clientName / osName / deviceName etc.
+    // Our .NET desktop client uses a custom UA ("WeAppsDesktop/x (OS token)"),
+    // which Appwrite parses as: clientType='' + deviceName='desktop' + osName set.
+    function classifySession(s) {
+      const mobileDevices = ['smartphone', 'phablet', 'tablet'];
+      const isMobileDevice = mobileDevices.includes((s.deviceName || '').toLowerCase());
+      const ct = (s.clientType || '').toLowerCase();
+
+      if (ct === 'browser') return isMobileDevice ? 'mobileBrowser' : 'browser';
+      if (ct === 'mobile app') return 'mobileApp';
+      // SDK / HTTP-library clients (incl. our desktop app) and any desktop-OS session
+      if (ct === 'library' || (s.deviceName || '').toLowerCase() === 'desktop' || s.osName) return 'desktopApp';
+      if (isMobileDevice) return 'mobileApp';
+      return 'unknown';
+    }
+
+    const SESSION_TYPES = {
+      browser:       { icon: '🌐', key: 'session.browser' },
+      mobileBrowser: { icon: '📱', key: 'session.mobileBrowser' },
+      mobileApp:     { icon: '📱', key: 'session.mobileApp' },
+      desktopApp:    { icon: '🖥️', key: 'session.desktopApp' },
+      unknown:       { icon: '❓', key: 'session.unknown' },
+    };
+
     async function loadSessions() {
       try {
         const result = await account.listSessions();
@@ -414,16 +440,17 @@
         }
         list.innerHTML = result.sessions.map(s => {
           const isCurrent = s.current;
-          const device = s.deviceName || s.deviceType || t('dash.unknownDevice');
-          const os = s.osName ? `${s.osName} ${s.osVersion}` : '';
-          const browser = s.clientName ? `${s.clientName} ${s.clientVersion}` : '';
+          const type = SESSION_TYPES[classifySession(s)];
+          const client = s.clientName ? `${s.clientName} ${s.clientVersion}`.trim() : '';
+          const os = s.osName ? `${s.osName} ${s.osVersion}`.trim() : '';
           const ip = s.ip || '';
+          const region = s.countryName || '';
           const loginTime = new Date(s.$createdAt).toLocaleString(getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US');
           return `
             <li class="session-item ${isCurrent ? 'current' : ''}">
               <div class="session-info">
-                <h4>${device} ${isCurrent ? `<span style="color:var(--success);font-size:0.8rem;">${t('dash.current')}</span>` : ''}</h4>
-                <p>${[os, browser, ip].filter(Boolean).join(' · ')}</p>
+                <h4>${type.icon} ${t(type.key)} ${isCurrent ? `<span style="color:var(--success);font-size:0.8rem;">${t('dash.current')}</span>` : ''}</h4>
+                <p>${[client, os, ip, region].filter(Boolean).join(' · ')}</p>
               </div>
               <div class="session-meta">
                 <div class="time">${loginTime}</div>

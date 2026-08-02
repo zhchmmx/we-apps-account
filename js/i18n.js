@@ -160,6 +160,13 @@ const translations = {
     'legal.terms': '服务条款',
     'legal.privacy': '隐私政策',
 
+    // === Session Types (UA-based) ===
+    'session.browser': '桌面浏览器',
+    'session.mobileBrowser': '手机浏览器',
+    'session.mobileApp': '移动应用',
+    'session.desktopApp': '桌面客户端',
+    'session.unknown': '未知设备',
+
     // === Register Page ===
     'register.title': '注册 - We Apps Account',
     'register.heading': '加入 We Apps',
@@ -402,6 +409,13 @@ const translations = {
     // === Legal ===
     'legal.terms': 'Terms of Service',
     'legal.privacy': 'Privacy Policy',
+
+    // === Session Types (UA-based) ===
+    'session.browser': 'Desktop Browser',
+    'session.mobileBrowser': 'Mobile Browser',
+    'session.mobileApp': 'Mobile App',
+    'session.desktopApp': 'Desktop App',
+    'session.unknown': 'Unknown Device',
 
     // === Register Page ===
     'register.title': 'Register - We Apps Account',
