@@ -423,6 +423,25 @@ a:hover {
   font-weight: 500;
 }
 
+.auth-footer-legal {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.auth-footer-legal a {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.auth-footer-legal a:hover {
+  color: var(--primary);
+}
+
+.auth-footer-legal .legal-sep {
+  margin: 0 0.4rem;
+}
+
 /* ===== Alert ===== */
 .alert {
   padding: 0.875rem 1rem;

@@ -74,6 +74,8 @@ we-apps-account/
 ├── forgot.html         # 找回密码页面
 ├── verify.html         # 邮箱验证页面
 ├── dashboard.html      # 账户管理仪表盘
+├── terms.html          # 服务条款
+├── privacy.html        # 隐私政策
 ├── css/
 │   └── style.css       # 全局样式
 ├── js/
@@ -94,6 +96,8 @@ we-apps-account/
 | 找回密码 | `forgot.html` | 发送重置邮件 + 设置新密码 |
 | 邮箱验证 | `verify.html` | 输入验证码完成邮箱验证 |
 | 仪表盘 | `dashboard.html` | 完整的账户管理界面 |
+| 服务条款 | `terms.html` | 服务条款（中文），各认证页底部均有入口 |
+| 隐私政策 | `privacy.html` | 隐私政策（中文），各认证页底部均有入口 |
 
 ## 客户端免登集成（JWT）
 

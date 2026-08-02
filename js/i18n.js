@@ -156,6 +156,10 @@ const translations = {
     'jwt.signingIn': '正在从客户端登录，请稍候...',
     'jwt.failed': '登录链接无效或已过期，请从客户端重新打开，或使用邮箱密码登录',
 
+    // === Legal ===
+    'legal.terms': '服务条款',
+    'legal.privacy': '隐私政策',
+
     // === Register Page ===
     'register.title': '注册 - We Apps Account',
     'register.heading': '加入 We Apps',
@@ -394,6 +398,10 @@ const translations = {
     // === Client Handoff (JWT) ===
     'jwt.signingIn': 'Signing you in from the app, please wait...',
     'jwt.failed': 'This sign-in link is invalid or expired. Please reopen it from the app, or sign in with email and password.',
+
+    // === Legal ===
+    'legal.terms': 'Terms of Service',
+    'legal.privacy': 'Privacy Policy',
 
     // === Register Page ===
     'register.title': 'Register - We Apps Account',
