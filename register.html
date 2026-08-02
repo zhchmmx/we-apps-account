@@ -155,6 +155,7 @@
 
         // Auto-login after registration
         await account.createEmailPasswordSession(email, password);
+        clearJwtAuth(); // explicit session login replaces any handoff JWT
         showToast(t('register.success'), 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {

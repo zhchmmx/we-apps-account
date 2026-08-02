@@ -108,6 +108,7 @@
 
       try {
         await account.createEmailPasswordSession(email, password);
+        clearJwtAuth(); // explicit session login replaces any handoff JWT
         showToast(t('login.loggingIn'), 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {
@@ -145,7 +146,8 @@
         }
         return;
       }
-      const user = await checkAuth();
+      // Persisted handoff JWT (same tab) or an existing session -> skip login
+      const user = await restoreJwtAuth() || await checkAuth();
       if (user) navigateTo('dashboard.html');
     })();
   </script>

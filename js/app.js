@@ -173,9 +173,11 @@ function parseJwtPayload(jwt) {
  * 2. client.setJWT(jwt) and verify with account.get().
  * 3. If an existing browser session shadows the JWT identity (different
  *    userId), delete that session and verify again.
+ * 4. On success, persist the JWT in sessionStorage (tab-scoped) so it
+ *    survives same-tab page navigation until it expires (15 min).
  *
- * Note: JWT auth is short-lived (15 min) and is not a session - a page
- * reload after expiry requires a fresh link from the client app.
+ * Note: JWT auth is short-lived (15 min) and is not a session - after
+ * expiry the user must reopen the link from the client app.
  *
  * @returns {Promise<object|null>} the logged-in user object, or null
  */
@@ -205,10 +207,57 @@ async function loginWithUrlJwt() {
     // JWT mode flag: 'current' session belongs to the client app.
     // Pages must NOT delete it on behalf of the browser (logout etc.).
     window.__weappsJwtAuth = true;
+    // Persist for same-tab navigation (dashboard, refresh, etc.)
+    try { sessionStorage.setItem(JWT_STORAGE_KEY, jwt); } catch (e) { /* ignore */ }
     return user;
   } catch (e) {
     return null;
   }
+}
+
+// Storage key for the JWT persisted across same-tab page loads
+const JWT_STORAGE_KEY = 'weapps_handoff_jwt';
+
+/**
+ * Restore JWT auth persisted by loginWithUrlJwt() on an earlier page.
+ * Verifies local expiry first, then validates against the API.
+ * If an existing browser session belongs to a DIFFERENT user, the explicit
+ * session wins: the stale JWT is discarded.
+ *
+ * @returns {Promise<object|null>} the logged-in user object, or null
+ */
+async function restoreJwtAuth() {
+  let jwt = null;
+  try { jwt = sessionStorage.getItem(JWT_STORAGE_KEY); } catch (e) { return null; }
+  if (!jwt) return null;
+
+  const payload = parseJwtPayload(jwt);
+  if (payload && payload.exp && payload.exp * 1000 <= Date.now()) {
+    clearJwtAuth();
+    return null;
+  }
+
+  if (!account && !initAppwrite()) return null;
+  try {
+    client.setJWT(jwt);
+    const user = await account.get();
+    if (payload && payload.userId && user.$id !== payload.userId) {
+      // An explicit browser session for another user takes precedence
+      clearJwtAuth();
+      return null;
+    }
+    window.__weappsJwtAuth = true;
+    return user;
+  } catch (e) {
+    clearJwtAuth();
+    return null;
+  }
+}
+
+// Drop the persisted JWT (logout, expiry, or explicit session login)
+function clearJwtAuth() {
+  try { sessionStorage.removeItem(JWT_STORAGE_KEY); } catch (e) { /* ignore */ }
+  window.__weappsJwtAuth = false;
 }
 
 // Initialize on DOM ready

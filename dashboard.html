@@ -250,8 +250,9 @@
 
     // ===== Auth Guard =====
     (async () => {
-      // Client-app handoff: ?jwt= auto-login takes priority, then existing session
-      currentUser = await loginWithUrlJwt() || await checkAuth();
+      // Client-app handoff: ?jwt= auto-login takes priority, then a
+      // persisted handoff JWT from an earlier page, then existing session
+      currentUser = await loginWithUrlJwt() || await restoreJwtAuth() || await checkAuth();
       if (!currentUser) {
         navigateTo('index.html');
         return;
@@ -370,7 +371,12 @@
       try {
         await account.updateEmail(email, password);
         showToast(t('msg.emailUpdated'), 'success');
-        setTimeout(() => { if (!window.__weappsJwtAuth) { account.deleteSession('current'); } navigateTo('index.html'); }, 1500);
+        setTimeout(() => {
+          const wasJwt = window.__weappsJwtAuth;
+          clearJwtAuth();
+          if (!wasJwt) { account.deleteSession('current'); }
+          navigateTo('index.html');
+        }, 1500);
       } catch (err) {
         showToast(err.message || t('msg.updateFailed'), 'error');
       }
@@ -542,6 +548,7 @@
       // JWT handoff mode: the browser owns no session - 'current' is the
       // desktop client's session. Do NOT delete it, just leave the page.
       if (window.__weappsJwtAuth) {
+        clearJwtAuth();
         showToast(t('msg.loggedOut'), 'info');
         setTimeout(() => navigateTo('index.html'), 500);
         return;
