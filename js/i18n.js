@@ -22,6 +22,7 @@ const translations = {
     'nav.sessions': '活跃会话',
     'nav.identities': '关联身份',
     'nav.danger': '危险操作',
+    'nav.subscription': '订阅管理',
     'nav.logout': '退出登录',
 
     // === Dashboard Header ===
@@ -31,6 +32,7 @@ const translations = {
     'dash.title.sessions': '活跃会话',
     'dash.title.identities': '关联身份',
     'dash.title.danger': '危险操作',
+    'dash.title.subscription': '订阅管理',
     'dash.title.default': '账户管理',
 
     // === Verification Banner ===
@@ -86,6 +88,29 @@ const translations = {
     'dash.disableDesc': '禁用后您将无法登录，但数据不会删除。',
     'dash.deleteAccount': '删除账户',
     'dash.deleteDesc': '永久删除您的账户和所有相关数据。',
+
+    // === Subscription Tab ===
+    'dash.currentPlan': '当前订阅',
+    'sub.currentStatus': '当前订阅状态',
+    'sub.noSubscription': '暂无有效订阅',
+    'sub.freePlan': '免费版',
+    'sub.proPlan': '付费版',
+    'sub.perMonth': '/月',
+    'sub.freeFeature1': '每月 3 次 AI 题目生成',
+    'sub.proFeature1': '每月 60 次 AI 题目生成',
+    'sub.activate': '激活',
+    'sub.activated': '已激活',
+    'sub.purchase': '购买',
+    'sub.recommended': '推荐',
+    'sub.planType': '套餐类型',
+    'sub.status': '状态',
+    'sub.statusActive': '生效中',
+    'sub.statusExpired': '已过期',
+    'sub.expiresAt': '到期时间',
+    'sub.freeActivated': '免费版已激活',
+    'sub.verifyEmailFirst': '请先验证邮箱',
+    'sub.loadFailed': '加载订阅信息失败',
+    'sub.checkoutUnavailable': '支付系统正在部署中，请稍后再试',
 
     // === Modals ===
     'dash.confirmAction': '确认操作',
@@ -159,6 +184,7 @@ const translations = {
     // === Legal ===
     'legal.terms': '服务条款',
     'legal.privacy': '隐私政策',
+    'legal.aup': '可接受使用政策',
 
     // === Session Types (UA-based) ===
     'session.browser': '桌面浏览器',
@@ -184,14 +210,16 @@ const translations = {
     'register.passwordMismatch': '两次输入的密码不一致',
     'register.termsText': '我已阅读并同意',
     'register.termsLink': '服务条款',
+    'register.sep1': '、',
     'register.and': '和',
     'register.privacyLink': '隐私政策',
+    'register.aupLink': '可接受使用政策',
     'register.registerBtn': '创建账户',
     'register.hasAccount': '已有账户？',
     'register.login': '立即登录',
     'register.invalidEmail': '请输入有效的电子邮件地址',
     'register.passwordMin8': '密码不符合要求，请查看下方提示',
-    'register.acceptTerms': '请同意服务条款和隐私政策',
+    'register.acceptTerms': '请同意服务条款、隐私政策和可接受使用政策',
     'register.emailExists': '该电子邮件已被注册',
     'register.rateLimit': '请求过于频繁，请稍后再试',
     'register.passwordWeak': '密码不符合安全要求',
@@ -272,6 +300,7 @@ const translations = {
     'nav.sessions': 'Active Sessions',
     'nav.identities': 'Linked Identities',
     'nav.danger': 'Danger Zone',
+    'nav.subscription': 'Subscription',
     'nav.logout': 'Log Out',
 
     // === Dashboard Header ===
@@ -281,6 +310,7 @@ const translations = {
     'dash.title.sessions': 'Active Sessions',
     'dash.title.identities': 'Linked Identities',
     'dash.title.danger': 'Danger Zone',
+    'dash.title.subscription': 'Subscription',
     'dash.title.default': 'Account Management',
 
     // === Verification Banner ===
@@ -336,6 +366,29 @@ const translations = {
     'dash.disableDesc': 'You will not be able to log in after disabling, but data will not be deleted.',
     'dash.deleteAccount': 'Delete Account',
     'dash.deleteDesc': 'Permanently delete your account and all associated data.',
+
+    // === Subscription Tab ===
+    'dash.currentPlan': 'Current Subscription',
+    'sub.currentStatus': 'Current Subscription Status',
+    'sub.noSubscription': 'No active subscription',
+    'sub.freePlan': 'Free',
+    'sub.proPlan': 'Pro',
+    'sub.perMonth': '/mo',
+    'sub.freeFeature1': '3 AI quiz generations per month',
+    'sub.proFeature1': '60 AI quiz generations per month',
+    'sub.activate': 'Activate',
+    'sub.activated': 'Activated',
+    'sub.purchase': 'Purchase',
+    'sub.recommended': 'Recommended',
+    'sub.planType': 'Plan',
+    'sub.status': 'Status',
+    'sub.statusActive': 'Active',
+    'sub.statusExpired': 'Expired',
+    'sub.expiresAt': 'Expires',
+    'sub.freeActivated': 'Free plan activated',
+    'sub.verifyEmailFirst': 'Please verify your email first',
+    'sub.loadFailed': 'Failed to load subscription info',
+    'sub.checkoutUnavailable': 'Payment system is being deployed, please try again later',
 
     // === Modals ===
     'dash.confirmAction': 'Confirm Action',
@@ -409,6 +462,7 @@ const translations = {
     // === Legal ===
     'legal.terms': 'Terms of Service',
     'legal.privacy': 'Privacy Policy',
+    'legal.aup': 'Acceptable Use Policy',
 
     // === Session Types (UA-based) ===
     'session.browser': 'Desktop Browser',
@@ -434,14 +488,16 @@ const translations = {
     'register.passwordMismatch': 'Passwords do not match',
     'register.termsText': 'I have read and agree to the',
     'register.termsLink': 'Terms of Service',
+    'register.sep1': ', ',
     'register.and': 'and',
     'register.privacyLink': 'Privacy Policy',
+    'register.aupLink': 'Acceptable Use Policy',
     'register.registerBtn': 'Create Account',
     'register.hasAccount': 'Already have an account?',
     'register.login': 'Log in now',
     'register.invalidEmail': 'Please enter a valid email address',
     'register.passwordMin8': 'Password does not meet requirements, see hints below',
-    'register.acceptTerms': 'Please accept the Terms of Service and Privacy Policy',
+    'register.acceptTerms': 'Please accept the Terms of Service, Privacy Policy and Acceptable Use Policy',
     'register.emailExists': 'This email is already registered',
     'register.rateLimit': 'Too many requests, please try again later',
     'register.passwordWeak': 'Password does not meet security requirements',

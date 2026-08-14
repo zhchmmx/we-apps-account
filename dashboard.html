@@ -27,6 +27,9 @@
         <a class="nav-item" data-tab="sessions" onclick="switchTab('sessions')">
           <span class="icon">📱</span> <span data-i18n="nav.sessions">活跃会话</span>
         </a>
+        <a class="nav-item" data-tab="subscription" onclick="switchTab('subscription')">
+          <span class="icon">💎</span> <span data-i18n="nav.subscription">订阅管理</span>
+        </a>
         <div class="nav-section-title" data-i18n="nav.advanced">高级</div>
         <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
           <span class="icon">🔗</span> <span data-i18n="nav.identities">关联身份</span>
@@ -94,6 +97,15 @@
               <div class="label" data-i18n="dash.created">注册时间</div>
               <div class="value" id="info-created">-</div>
             </div>
+          </div>
+        </div>
+
+        <div class="card" id="subscription-info-card">
+          <div class="card-header">
+            <h3 data-i18n="dash.currentPlan">当前订阅</h3>
+          </div>
+          <div id="profile-subscription-content">
+            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
           </div>
         </div>
 
@@ -193,6 +205,38 @@
         </div>
       </div>
 
+      <!-- ===== Subscription Tab ===== -->
+      <div class="page-section" id="tab-subscription">
+        <div class="card" id="subscription-status-card">
+          <div class="card-header">
+            <h3 data-i18n="sub.currentStatus">当前订阅状态</h3>
+          </div>
+          <div id="subscription-status-content">
+            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+          </div>
+        </div>
+
+        <div class="plan-cards">
+          <div class="plan-card" id="plan-free">
+            <div class="plan-name" data-i18n="sub.freePlan">免费版</div>
+            <div class="plan-price">$0<span class="plan-period" data-i18n="sub.perMonth">/月</span></div>
+            <ul class="plan-features">
+              <li data-i18n="sub.freeFeature1">每月 3 次 AI 题目生成</li>
+            </ul>
+            <button class="btn btn-secondary" id="btn-free" onclick="activateFreePlan()" data-i18n="sub.activate">激活</button>
+          </div>
+          <div class="plan-card plan-featured" id="plan-pro">
+            <div class="plan-badge" data-i18n="sub.recommended">推荐</div>
+            <div class="plan-name" data-i18n="sub.proPlan">付费版</div>
+            <div class="plan-price">$4.99<span class="plan-period" data-i18n="sub.perMonth">/月</span></div>
+            <ul class="plan-features">
+              <li data-i18n="sub.proFeature1">每月 60 次 AI 题目生成</li>
+            </ul>
+            <button class="btn btn-primary" id="btn-pro" onclick="purchaseProPlan()" data-i18n="sub.purchase">购买</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== Danger Zone Tab ===== -->
       <div class="page-section" id="tab-danger">
         <div class="card" style="border-color: rgba(198,40,40,0.3);">
@@ -264,6 +308,201 @@
       renderProfile(currentUser);
       loadSessions();
       loadIdentities();
+      loadSubscription();
+    }
+
+    // ===== Subscription =====
+    let currentSubscription = null;
+    const APPWRITE_FUNCTION_ID = '6a784dd9002e0069cf39';
+    // TODO: 替换为实际部署的 CF Worker Waffo 收银台代理 URL
+    const CHECKOUT_WORKER_URL = '';
+
+    async function callFunction(path, method, body) {
+      try {
+        const jwt = await account.createJWT();
+        const token = jwt.jwt || jwt;
+        const headers = {
+          'Content-Type': 'application/json',
+          'X-Appwrite-Project': APPWRITE_CONFIG.projectId,
+          'X-Appwrite-JWT': token
+        };
+        const response = await fetch(
+          `${APPWRITE_CONFIG.endpoint}/functions/${APPWRITE_FUNCTION_ID}/executions`,
+          { method: 'POST', headers, body: JSON.stringify({ path, httpMethod: method, body: body || {} }) }
+        );
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.message || `Function call failed (${response.status})`);
+        }
+        const result = await response.json();
+        if (result.responseStatusCode && result.responseStatusCode >= 400) {
+          const errBody = JSON.parse(result.responseBody || '{}');
+          throw new Error(errBody.message || `Error ${result.responseStatusCode}`);
+        }
+        return JSON.parse(result.responseBody || '{}');
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    async function loadSubscription() {
+      try {
+        const data = await callFunction('/subscription/me', 'GET');
+        currentSubscription = data.subscription || null;
+        renderSubscription();
+        updateProfileSubscription();
+      } catch (err) {
+        console.error('Failed to load subscription:', err);
+        document.getElementById('subscription-status-content').innerHTML =
+          `<p style="color:var(--error);font-size:0.9rem;">${t('sub.loadFailed')}</p>`;
+        document.getElementById('profile-subscription-content').innerHTML =
+          `<p style="color:var(--error);font-size:0.9rem;">${t('sub.loadFailed')}</p>`;
+      }
+    }
+
+    function renderSubscription() {
+      const el = document.getElementById('subscription-status-content');
+      const sub = currentSubscription;
+      const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
+
+      if (!sub) {
+        el.innerHTML = `
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span style="font-weight:500;">${t('sub.noSubscription')}</span>
+          </div>`;
+        updatePlanButtons(null);
+        return;
+      }
+
+      const planKey = sub.planType === 'pro' ? 'sub.proPlan' : 'sub.freePlan';
+      const isActive = sub.status === 'active';
+      const statusKey = isActive ? 'sub.statusActive' : 'sub.statusExpired';
+      const statusClass = isActive ? 'status-active' : 'status-expired';
+      const expiresStr = sub.expiresAt
+        ? new Date(sub.expiresAt).toLocaleString(locale)
+        : t('dash.notSet');
+
+      el.innerHTML = `
+        <div class="sub-status-grid">
+          <div class="sub-status-item">
+            <div class="label">${t('sub.planType')}</div>
+            <div class="value">${t(planKey)}</div>
+          </div>
+          <div class="sub-status-item">
+            <div class="label">${t('sub.status')}</div>
+            <div class="value"><span class="sub-status-badge ${statusClass}">${t(statusKey)}</span></div>
+          </div>
+          <div class="sub-status-item">
+            <div class="label">${t('sub.expiresAt')}</div>
+            <div class="value">${expiresStr}</div>
+          </div>
+        </div>`;
+
+      updatePlanButtons(sub);
+    }
+
+    function updateProfileSubscription() {
+      const el = document.getElementById('profile-subscription-content');
+      const sub = currentSubscription;
+      const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
+
+      if (!sub) {
+        el.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">${t('sub.noSubscription')}</p>`;
+        return;
+      }
+
+      const planKey = sub.planType === 'pro' ? 'sub.proPlan' : 'sub.freePlan';
+      const expiresStr = sub.expiresAt
+        ? new Date(sub.expiresAt).toLocaleString(locale)
+        : t('dash.notSet');
+
+      el.innerHTML = `
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="label">${t('sub.planType')}</div>
+            <div class="value">${t(planKey)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('sub.expiresAt')}</div>
+            <div class="value">${expiresStr}</div>
+          </div>
+        </div>`;
+    }
+
+    function updatePlanButtons(sub) {
+      const btnFree = document.getElementById('btn-free');
+      const btnPro = document.getElementById('btn-pro');
+      const freeCard = document.getElementById('plan-free');
+      const proCard = document.getElementById('plan-pro');
+
+      // Reset
+      freeCard.classList.remove('plan-current');
+      proCard.classList.remove('plan-current');
+
+      if (sub && sub.planType === 'free' && sub.status === 'active') {
+        btnFree.textContent = t('sub.activated');
+        btnFree.disabled = true;
+        btnFree.classList.remove('btn-secondary');
+        btnFree.classList.add('btn-ghost');
+        freeCard.classList.add('plan-current');
+      } else {
+        btnFree.textContent = t('sub.activate');
+        btnFree.disabled = false;
+        btnFree.classList.remove('btn-ghost');
+        btnFree.classList.add('btn-secondary');
+      }
+
+      if (sub && sub.planType === 'pro' && sub.status === 'active') {
+        proCard.classList.add('plan-current');
+      }
+    }
+
+    async function activateFreePlan() {
+      if (!currentUser.emailVerification) {
+        showToast(t('sub.verifyEmailFirst'), 'error');
+        return;
+      }
+      const btn = document.getElementById('btn-free');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = t('common.loading');
+      try {
+        await callFunction('/subscription/init-free', 'POST', {});
+        showToast(t('sub.freeActivated'), 'success');
+        loadSubscription();
+      } catch (err) {
+        showToast(err.message || t('msg.operationFailed'), 'error');
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    async function purchaseProPlan() {
+      if (!CHECKOUT_WORKER_URL) {
+        showToast(t('sub.checkoutUnavailable'), 'info');
+        return;
+      }
+      try {
+        const jwt = await account.createJWT();
+        const token = jwt.jwt || jwt;
+        const response = await fetch(`${CHECKOUT_WORKER_URL}/checkout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ productId: 'PROD_7V5zNhwlrQKWrBkcyDebnr' })
+        });
+        if (!response.ok) throw new Error('Checkout failed');
+        const data = await response.json();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          throw new Error('No checkout URL');
+        }
+      } catch (err) {
+        showToast(err.message || t('msg.operationFailed'), 'error');
+      }
     }
 
     // ===== Mobile Sidebar Toggle =====
@@ -297,7 +536,7 @@
 
       const titleKeys = {
         profile: 'dash.title.profile', security: 'dash.title.security', sessions: 'dash.title.sessions',
-        identities: 'dash.title.identities', danger: 'dash.title.danger'
+        identities: 'dash.title.identities', subscription: 'dash.title.subscription', danger: 'dash.title.danger'
       };
       const titleKey = titleKeys[tabName] || 'dash.title.default';
       document.getElementById('page-title').textContent = t(titleKey);

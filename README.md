@@ -76,6 +76,7 @@ we-apps-account/
 ├── dashboard.html      # 账户管理仪表盘
 ├── terms.html          # 服务条款
 ├── privacy.html        # 隐私政策
+├── aup.html            # 可接受使用政策
 ├── css/
 │   └── style.css       # 全局样式
 ├── js/
@@ -98,6 +99,7 @@ we-apps-account/
 | 仪表盘 | `dashboard.html` | 完整的账户管理界面 |
 | 服务条款 | `terms.html` | 服务条款（中文），各认证页底部均有入口 |
 | 隐私政策 | `privacy.html` | 隐私政策（中文），各认证页底部均有入口 |
+| 可接受使用政策 | `aup.html` | 可接受使用政策（中文），各认证页底部均有入口 |
 
 ## 客户端免登集成（JWT）
 
