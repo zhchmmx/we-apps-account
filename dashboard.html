@@ -314,8 +314,8 @@
     // ===== Subscription =====
     let currentSubscription = null;
     const APPWRITE_FUNCTION_ID = '6a784dd9002e0069cf39';
-    // TODO: 替换为实际部署的 CF Worker Waffo 收银台代理 URL
-    const CHECKOUT_WORKER_URL = '';
+    // CF Worker Waffo 收银台代理（POST {url}/checkout 创建结账会话）
+    const CHECKOUT_WORKER_URL = 'https://checkout.08012026.xyz';
 
     async function callFunction(path, method, body) {
       try {
@@ -328,7 +328,7 @@
         };
         const response = await fetch(
           `${APPWRITE_CONFIG.endpoint}/functions/${APPWRITE_FUNCTION_ID}/executions`,
-          { method: 'POST', headers, body: JSON.stringify({ path, httpMethod: method, body: body || {} }) }
+          { method: 'POST', headers, body: JSON.stringify({ path: path, method: method, body: JSON.stringify(body || {}) }) }
         );
         if (!response.ok) {
           const err = await response.json().catch(() => ({}));
@@ -374,12 +374,12 @@
         return;
       }
 
-      const planKey = sub.planType === 'pro' ? 'sub.proPlan' : 'sub.freePlan';
+      const planKey = sub.planType === 'premium' ? 'sub.proPlan' : 'sub.freePlan';
       const isActive = sub.status === 'active';
       const statusKey = isActive ? 'sub.statusActive' : 'sub.statusExpired';
       const statusClass = isActive ? 'status-active' : 'status-expired';
-      const expiresStr = sub.expiresAt
-        ? new Date(sub.expiresAt).toLocaleString(locale)
+      const expiresStr = sub.endDate
+        ? new Date(sub.endDate).toLocaleString(locale)
         : t('dash.notSet');
 
       el.innerHTML = `
@@ -411,9 +411,9 @@
         return;
       }
 
-      const planKey = sub.planType === 'pro' ? 'sub.proPlan' : 'sub.freePlan';
-      const expiresStr = sub.expiresAt
-        ? new Date(sub.expiresAt).toLocaleString(locale)
+      const planKey = sub.planType === 'premium' ? 'sub.proPlan' : 'sub.freePlan';
+      const expiresStr = sub.endDate
+        ? new Date(sub.endDate).toLocaleString(locale)
         : t('dash.notSet');
 
       el.innerHTML = `
@@ -452,7 +452,7 @@
         btnFree.classList.add('btn-secondary');
       }
 
-      if (sub && sub.planType === 'pro' && sub.status === 'active') {
+      if (sub && sub.planType === 'premium' && sub.status === 'active') {
         proCard.classList.add('plan-current');
       }
     }
