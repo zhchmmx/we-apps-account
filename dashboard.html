@@ -335,7 +335,6 @@
     const CHECKOUT_WORKER_URL = 'https://checkout.08012026.xyz';
     // AI 服务 API（GET /usage 返回当月用量，按用户 Bearer JWT 认证）
     const AI_API_BASE = 'https://api.08012026.xyz';
-    const AI_MONTHLY_QUOTA = 5;
 
     async function callFunction(path, method, body) {
       try {
@@ -551,16 +550,17 @@
     function renderUsage(data) {
       const el = document.getElementById('usage-content');
       const cost = Number(data.cost) || 0;
-      const pct = Math.min((cost / AI_MONTHLY_QUOTA) * 100, 100);
+      const quotaLimit = currentSubscription?.quotaLimit ?? 5; // 服务端拿不到兜底 5
+      const pct = quotaLimit > 0 ? Math.min((cost / quotaLimit) * 100, 100) : 0;
       const level = pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : 'ok';
-      const remaining = Math.max(AI_MONTHLY_QUOTA - cost, 0);
+      const remaining = Math.max(quotaLimit - cost, 0);
       const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
 
       document.getElementById('usage-month').textContent = data.month || '';
 
       el.innerHTML = `
         <div class="usage-summary">
-          <span><strong>$${cost.toFixed(2)}</strong> / $${AI_MONTHLY_QUOTA.toFixed(2)}</span>
+          <span><strong>$${cost.toFixed(2)}</strong> / $${quotaLimit.toFixed(2)}</span>
           <span>${pct.toFixed(1)}%</span>
         </div>
         <div class="usage-bar">
