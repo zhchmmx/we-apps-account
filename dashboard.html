@@ -501,6 +501,10 @@
         showToast(t('sub.checkoutUnavailable'), 'info');
         return;
       }
+      if (!currentUser.emailVerification) {
+        showToast(t('sub.verifyEmailFirst'), 'error');
+        return;
+      }
       try {
         const jwt = await account.createJWT();
         const token = jwt.jwt || jwt;
