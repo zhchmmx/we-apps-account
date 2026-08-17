@@ -23,6 +23,7 @@ const translations = {
     'nav.identities': '关联身份',
     'nav.danger': '危险操作',
     'nav.subscription': '订阅管理',
+    'nav.usage': 'AI 使用',
     'nav.logout': '退出登录',
 
     // === Dashboard Header ===
@@ -33,6 +34,7 @@ const translations = {
     'dash.title.identities': '关联身份',
     'dash.title.danger': '危险操作',
     'dash.title.subscription': '订阅管理',
+    'dash.title.usage': 'AI 使用情况',
     'dash.title.default': '账户管理',
 
     // === Verification Banner ===
@@ -111,6 +113,16 @@ const translations = {
     'sub.verifyEmailFirst': '请先验证邮箱',
     'sub.loadFailed': '加载订阅信息失败',
     'sub.checkoutUnavailable': '支付系统正在部署中，请稍后再试',
+
+    // === AI Usage Tab ===
+    'usage.title': '本月 AI 使用',
+    'usage.requests': '请求数',
+    'usage.cost': '已花费',
+    'usage.tokensIn': '输入 Tokens',
+    'usage.tokensOut': '输出 Tokens',
+    'usage.remaining': '剩余额度',
+    'usage.loadFailed': '加载使用情况失败',
+    'usage.retry': '重试',
 
     // === Modals ===
     'dash.confirmAction': '确认操作',
@@ -301,6 +313,7 @@ const translations = {
     'nav.identities': 'Linked Identities',
     'nav.danger': 'Danger Zone',
     'nav.subscription': 'Subscription',
+    'nav.usage': 'AI Usage',
     'nav.logout': 'Log Out',
 
     // === Dashboard Header ===
@@ -311,6 +324,7 @@ const translations = {
     'dash.title.identities': 'Linked Identities',
     'dash.title.danger': 'Danger Zone',
     'dash.title.subscription': 'Subscription',
+    'dash.title.usage': 'AI Usage',
     'dash.title.default': 'Account Management',
 
     // === Verification Banner ===
@@ -389,6 +403,16 @@ const translations = {
     'sub.verifyEmailFirst': 'Please verify your email first',
     'sub.loadFailed': 'Failed to load subscription info',
     'sub.checkoutUnavailable': 'Payment system is being deployed, please try again later',
+
+    // === AI Usage Tab ===
+    'usage.title': 'AI Usage This Month',
+    'usage.requests': 'Requests',
+    'usage.cost': 'Cost',
+    'usage.tokensIn': 'Input Tokens',
+    'usage.tokensOut': 'Output Tokens',
+    'usage.remaining': 'Remaining',
+    'usage.loadFailed': 'Failed to load usage data',
+    'usage.retry': 'Retry',
 
     // === Modals ===
     'dash.confirmAction': 'Confirm Action',

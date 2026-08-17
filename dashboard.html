@@ -30,6 +30,9 @@
         <a class="nav-item" data-tab="subscription" onclick="switchTab('subscription')">
           <span class="icon">💎</span> <span data-i18n="nav.subscription">订阅管理</span>
         </a>
+        <a class="nav-item" data-tab="usage" onclick="switchTab('usage')">
+          <span class="icon">📊</span> <span data-i18n="nav.usage">AI 使用</span>
+        </a>
         <div class="nav-section-title" data-i18n="nav.advanced">高级</div>
         <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
           <span class="icon">🔗</span> <span data-i18n="nav.identities">关联身份</span>
@@ -237,6 +240,19 @@
         </div>
       </div>
 
+      <!-- ===== AI Usage Tab ===== -->
+      <div class="page-section" id="tab-usage">
+        <div class="card">
+          <div class="card-header">
+            <h3 data-i18n="usage.title">本月 AI 使用</h3>
+            <span class="badge" id="usage-month"></span>
+          </div>
+          <div id="usage-content">
+            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== Danger Zone Tab ===== -->
       <div class="page-section" id="tab-danger">
         <div class="card" style="border-color: rgba(198,40,40,0.3);">
@@ -309,6 +325,7 @@
       loadSessions();
       loadIdentities();
       loadSubscription();
+      loadUsage();
     }
 
     // ===== Subscription =====
@@ -316,6 +333,9 @@
     const APPWRITE_FUNCTION_ID = '6a784dd9002e0069cf39';
     // CF Worker Waffo 收银台代理（POST {url}/checkout 创建结账会话）
     const CHECKOUT_WORKER_URL = 'https://checkout.08012026.xyz';
+    // AI 服务 API（GET /usage 返回当月用量，按用户 Bearer JWT 认证）
+    const AI_API_BASE = 'https://api.08012026.xyz';
+    const AI_MONTHLY_QUOTA = 5;
 
     async function callFunction(path, method, body) {
       try {
@@ -505,6 +525,71 @@
       }
     }
 
+    // ===== AI Usage =====
+    async function loadUsage() {
+      const el = document.getElementById('usage-content');
+      try {
+        const jwt = await account.createJWT();
+        const token = jwt.jwt || jwt;
+        const response = await fetch(`${AI_API_BASE}/usage`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error(`Usage request failed (${response.status})`);
+        const result = await response.json();
+        if (!result.data) throw new Error('Usage data missing');
+        renderUsage(result.data);
+      } catch (err) {
+        console.error('Failed to load AI usage:', err);
+        el.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+            <p style="color:var(--error);font-size:0.9rem;margin:0;">${t('usage.loadFailed')}</p>
+            <button class="btn btn-secondary btn-sm" onclick="loadUsage()">${t('usage.retry')}</button>
+          </div>`;
+      }
+    }
+
+    function renderUsage(data) {
+      const el = document.getElementById('usage-content');
+      const cost = Number(data.cost) || 0;
+      const pct = Math.min((cost / AI_MONTHLY_QUOTA) * 100, 100);
+      const level = pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : 'ok';
+      const remaining = Math.max(AI_MONTHLY_QUOTA - cost, 0);
+      const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
+
+      document.getElementById('usage-month').textContent = data.month || '';
+
+      el.innerHTML = `
+        <div class="usage-summary">
+          <span><strong>$${cost.toFixed(2)}</strong> / $${AI_MONTHLY_QUOTA.toFixed(2)}</span>
+          <span>${pct.toFixed(1)}%</span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-bar-fill ${level}" style="width:${pct}%;"></div>
+        </div>
+        <div class="info-grid" style="margin-top:1.25rem;">
+          <div class="info-item">
+            <div class="label">${t('usage.requests')}</div>
+            <div class="value">${(Number(data.requests) || 0).toLocaleString(locale)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('usage.cost')}</div>
+            <div class="value">$${cost.toFixed(2)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('usage.tokensIn')}</div>
+            <div class="value">${(Number(data.tokensIn) || 0).toLocaleString(locale)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('usage.tokensOut')}</div>
+            <div class="value">${(Number(data.tokensOut) || 0).toLocaleString(locale)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('usage.remaining')}</div>
+            <div class="value">$${remaining.toFixed(2)}</div>
+          </div>
+        </div>`;
+    }
+
     // ===== Mobile Sidebar Toggle =====
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -536,7 +621,7 @@
 
       const titleKeys = {
         profile: 'dash.title.profile', security: 'dash.title.security', sessions: 'dash.title.sessions',
-        identities: 'dash.title.identities', subscription: 'dash.title.subscription', danger: 'dash.title.danger'
+        identities: 'dash.title.identities', subscription: 'dash.title.subscription', usage: 'dash.title.usage', danger: 'dash.title.danger'
       };
       const titleKey = titleKeys[tabName] || 'dash.title.default';
       document.getElementById('page-title').textContent = t(titleKey);
