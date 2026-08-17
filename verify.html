@@ -24,30 +24,11 @@
       <div class="auth-card">
         <img src="assets/We.png" alt="We" class="logo-small">
         <h2 data-i18n="verify.verifyEmail">邮箱验证</h2>
-        <p class="subtitle" data-i18n="verify.subtitle">请输入您收到的验证码</p>
-
         <div id="verify-alert" class="alert"></div>
 
-        <form id="verify-form" novalidate>
-          <div class="form-group">
-            <label for="user-id" data-i18n="verify.userIdLabel">用户 ID</label>
-            <input type="text" id="user-id" class="form-input" data-i18n-placeholder="verify.userIdPlaceholder" placeholder="从邮件链接中获取" readonly>
-          </div>
+        <p class="subtitle" id="verify-status" data-i18n="verify.verifying">正在验证您的邮箱，请稍候...</p>
 
-          <div class="form-group">
-            <label for="secret"><span data-i18n="verify.secretLabel">验证码</span> <span class="required">*</span></label>
-            <input type="text" id="secret" class="form-input" data-i18n-placeholder="verify.secretPlaceholder" placeholder="输入验证码" required>
-          </div>
-
-          <button type="submit" id="verify-btn" class="btn btn-primary">
-            <span class="spinner"></span>
-            <span class="btn-text" data-i18n="verify.verifyBtn">验证邮箱</span>
-          </button>
-        </form>
-
-        <div class="divider"><span data-i18n="verify.or">或者</span></div>
-
-        <button id="resend-btn" class="btn btn-secondary" style="width:100%;" onclick="resendVerification()">
+        <button id="resend-btn" class="btn btn-secondary" style="width:100%;display:none;" onclick="resendVerification()">
           <span data-i18n="verify.resend">重新发送验证邮件</span>
         </button>
 
@@ -70,28 +51,22 @@
   <script>
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // Auto-fill from URL params
+    // Ensure Appwrite is initialized before any verification logic
+    initAppwrite();
+
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
     const secret = urlParams.get('secret');
+    const statusEl = document.getElementById('verify-status');
+    const resendBtn = document.getElementById('resend-btn');
 
-    if (userId) document.getElementById('user-id').value = userId;
-    if (secret) document.getElementById('secret').value = secret;
-
-    // Auto-verify if both params are present (clicked from email link)
     if (userId && secret) {
+      // Auto-verify from email link
       (async () => {
-        const form = document.getElementById('verify-form');
-        form.style.display = 'none';
-        document.querySelector('.divider').style.display = 'none';
-        document.getElementById('resend-btn').style.display = 'none';
-        document.querySelector('.subtitle').textContent = t('verify.verifying');
-
         try {
           await account.updateVerification(userId, secret);
-          const subtitle = document.querySelector('.subtitle');
-          subtitle.textContent = t('verify.success');
-          subtitle.style.color = 'var(--success)';
+          statusEl.textContent = t('verify.success');
+          statusEl.style.color = 'var(--success)';
           showToast(t('verify.verifySuccess'), 'success');
           setTimeout(() => navigateTo('dashboard.html'), 1500);
         } catch (err) {
@@ -99,47 +74,23 @@
             'general_invalid_response': t('verify.invalidCode'),
             'general_rate_limit_exceeded': t('verify.rateLimit'),
           };
-          const msg = messages[err.type] || err.message || t('verify.verifyFailed');
-          const subtitle = document.querySelector('.subtitle');
-          subtitle.textContent = msg;
-          subtitle.style.color = 'var(--error)';
-          // Show form again so user can retry manually or resend
-          form.style.display = 'block';
-          document.querySelector('.divider').style.display = 'flex';
-          document.getElementById('resend-btn').style.display = 'inline-flex';
+          statusEl.textContent = messages[err.type] || err.message || t('verify.verifyFailed');
+          statusEl.style.color = 'var(--error)';
+          resendBtn.style.display = 'inline-flex';
+        }
+      })();
+    } else {
+      // No URL params — show resend option
+      (async () => {
+        const user = await checkAuth();
+        if (user) {
+          statusEl.textContent = t('verify.clickResend');
+          resendBtn.style.display = 'inline-flex';
+        } else {
+          statusEl.textContent = t('verify.pleaseLogin');
         }
       })();
     }
-
-    document.getElementById('verify-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      hideAlert('verify-alert');
-
-      const uid = document.getElementById('user-id').value;
-      const sec = document.getElementById('secret').value;
-
-      if (!uid || !sec) {
-        showAlert('verify-alert', t('verify.fillFields'), 'error');
-        return;
-      }
-
-      setLoading('verify-btn', true);
-
-      try {
-        await account.updateVerification(uid, sec);
-        showToast(t('verify.verifySuccess'), 'success');
-        setTimeout(() => navigateTo('dashboard.html'), 1000);
-      } catch (err) {
-        const messages = {
-          'general_invalid_response': t('verify.invalidCode'),
-          'general_rate_limit_exceeded': t('verify.rateLimit'),
-        };
-        const msg = messages[err.type] || err.message || t('verify.verifyFailed');
-        showAlert('verify-alert', msg, 'error');
-      } finally {
-        setLoading('verify-btn', false);
-      }
-    });
 
     async function resendVerification() {
       hideAlert('verify-alert');
