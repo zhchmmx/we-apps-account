@@ -188,10 +188,20 @@ const translations = {
     'login.rateLimit': '请求过于频繁，请稍后再试',
     'login.accountBlocked': '该账户已被禁用',
     'login.loginFailed': '登录失败，请重试',
+    'login.orContinue': '或',
+    'login.microsoft': '继续使用 Microsoft',
 
     // === Client Handoff (JWT) ===
     'jwt.signingIn': '正在从客户端登录，请稍候...',
     'jwt.failed': '登录链接无效或已过期，请从客户端重新打开，或使用邮箱密码登录',
+
+    // === OAuth ===
+    'oauth.title': '登录中 - We Apps Account',
+    'oauth.heading': 'We Apps Account',
+    'oauth.signingIn': '正在通过 Microsoft 登录，请稍候...',
+    'oauth.failed': 'Microsoft 登录失败，请重试',
+    'oauth.backToLogin': '返回登录',
+    'oauth.error': '登录失败或已取消',
 
     // === Legal ===
     'legal.terms': '服务条款',
@@ -471,10 +481,20 @@ const translations = {
     'login.rateLimit': 'Too many requests, please try again later',
     'login.accountBlocked': 'This account has been disabled',
     'login.loginFailed': 'Login failed, please try again',
+    'login.orContinue': 'or',
+    'login.microsoft': 'Continue with Microsoft',
 
     // === Client Handoff (JWT) ===
     'jwt.signingIn': 'Signing you in from the app, please wait...',
     'jwt.failed': 'This sign-in link is invalid or expired. Please reopen it from the app, or sign in with email and password.',
+
+    // === OAuth ===
+    'oauth.title': 'Signing In - We Apps Account',
+    'oauth.heading': 'We Apps Account',
+    'oauth.signingIn': 'Signing in with Microsoft, please wait...',
+    'oauth.failed': 'Microsoft sign-in failed, please try again',
+    'oauth.backToLogin': 'Back to Login',
+    'oauth.error': 'Sign-in failed or cancelled',
 
     // === Legal ===
     'legal.terms': 'Terms of Service',

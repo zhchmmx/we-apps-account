@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-page-title="oauth.title">登录中 - We Apps Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-layout">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <img src="assets/We.png" alt="We Apps" class="logo-large">
+        <h1 data-i18n="oauth.heading">We Apps Account</h1>
+        <p data-i18n="login.tagline">一个 We Apps 账户，畅享所有 We Apps 服务</p>
+      </div>
+    </div>
+
+    <!-- Right Panel - OAuth Status -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <img src="assets/We.png" alt="We" class="logo-small">
+        <h2 data-i18n="oauth.title">登录中</h2>
+        <p class="subtitle" data-i18n="oauth.signingIn">正在通过 Microsoft 登录，请稍候...</p>
+
+        <div id="oauth-loading" style="text-align:center;padding:1.5rem 0;">
+          <div class="oauth-spinner"></div>
+        </div>
+
+        <div id="oauth-error" style="display:none;text-align:center;padding:1rem 0;">
+          <p style="margin-bottom:1.25rem;" data-i18n="oauth.error">登录失败或已取消</p>
+          <button type="button" class="btn btn-primary" onclick="navigateTo('index.html')">
+            <span class="btn-text" data-i18n="oauth.backToLogin">返回登录</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const ok = await handleOAuthCallback();
+      if (!ok) {
+        document.getElementById('oauth-loading').style.display = 'none';
+        document.getElementById('oauth-error').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

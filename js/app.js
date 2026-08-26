@@ -260,6 +260,58 @@ function clearJwtAuth() {
   window.__weappsJwtAuth = false;
 }
 
+// ===== OAuth (Microsoft) =====
+
+/**
+ * 发起 OAuth2 登录：跳转到 Appwrite 的 OAuth 端点，再由其转发到微软授权页。
+ * Appwrite Web SDK v16.1.0 使用位置参数签名：
+ *   createOAuth2Session(provider, success, failure, scopes)
+ * 会话由 Appwrite 服务端在 OAuth 流程中直接建立（cookie 落在 Appwrite 域名上），
+ * 跳回 success URL 后只需 account.get() 确认即可，无需解析 userId/secret。
+ *
+ * @param {string} provider  provider 标识，如 'microsoft'
+ * @param {string} [alertId] 即时出错时用于展示错误提示的 alert 元素 id
+ */
+async function oauthLogin(provider, alertId) {
+  if (!account && !initAppwrite()) return;
+  try {
+    const base = window.location.origin;
+    await account.createOAuth2Session(
+      provider,
+      `${base}/oauth-callback.html`,         // success
+      `${base}/oauth-callback.html?error=1`  // failure
+    );
+    // 成功后 SDK 会触发整页跳转，此函数不会继续执行
+  } catch (err) {
+    // 例如 provider 未在 Appwrite Console 启用时抛错
+    if (alertId) showAlert(alertId, err.message || t('oauth.failed'), 'error');
+  }
+}
+
+/**
+ * OAuth 回调页处理：确认会话并跳转仪表盘。
+ * 由 oauth-callback.html 在页面加载时调用；返回 false 表示需要展示失败提示。
+ * 失败路径（?error=1）或会话未建立时返回 false，由回调页展示错误信息。
+ *
+ * @returns {Promise<boolean>} 是否成功建立会话
+ */
+async function handleOAuthCallback() {
+  if (!account && !initAppwrite()) return false;
+  if (new URLSearchParams(window.location.search).has('error')) return false;
+
+  try {
+    const user = await account.get();
+    if (user) {
+      clearJwtAuth(); // 显式 OAuth 会话优先于客户端 JWT 交接
+      navigateTo('dashboard.html');
+      return true;
+    }
+  } catch (e) {
+    // 会话未建立，落入失败处理
+  }
+  return false;
+}
+
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   if (!initAppwrite()) {
