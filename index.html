@@ -41,7 +41,7 @@
         <form id="login-form" novalidate>
           <!-- 微软 OAuth 暂隐藏：Appwrite 微软 provider 将邮箱恒视为未验证（isEmailVerified 硬编码 false），
                同邮箱已存在用户/身份时必回 400。这是 Appwrite 防账户枚举的刻意设计（PR #11280），非 bug，
-               暂无可配置的修复途径。如需恢复需先解决邮箱冲突。 -->
+               暂无可配置的修复途径。如需恢复需先解决邮箱冲突。
           <button type="button" id="oauth-microsoft" class="btn btn-oauth" onclick="oauthLogin('microsoft', 'login-alert')">
             <span class="oauth-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
