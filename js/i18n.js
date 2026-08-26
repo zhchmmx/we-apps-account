@@ -190,6 +190,7 @@ const translations = {
     'login.loginFailed': '登录失败，请重试',
     'login.orContinue': '或',
     'login.microsoft': '继续使用 Microsoft',
+    'login.github': '继续使用 GitHub',
 
     // === Client Handoff (JWT) ===
     'jwt.signingIn': '正在从客户端登录，请稍候...',
@@ -198,8 +199,8 @@ const translations = {
     // === OAuth ===
     'oauth.title': '登录中 - We Apps Account',
     'oauth.heading': 'We Apps Account',
-    'oauth.signingIn': '正在通过 Microsoft 登录，请稍候...',
-    'oauth.failed': 'Microsoft 登录失败，请重试',
+    'oauth.signingIn': '正在通过第三方登录，请稍候...',
+    'oauth.failed': '第三方登录失败，请重试',
     'oauth.backToLogin': '返回登录',
     'oauth.error': '登录失败或已取消',
 
@@ -483,6 +484,7 @@ const translations = {
     'login.loginFailed': 'Login failed, please try again',
     'login.orContinue': 'or',
     'login.microsoft': 'Continue with Microsoft',
+    'login.github': 'Continue with GitHub',
 
     // === Client Handoff (JWT) ===
     'jwt.signingIn': 'Signing you in from the app, please wait...',
@@ -491,8 +493,8 @@ const translations = {
     // === OAuth ===
     'oauth.title': 'Signing In - We Apps Account',
     'oauth.heading': 'We Apps Account',
-    'oauth.signingIn': 'Signing in with Microsoft, please wait...',
-    'oauth.failed': 'Microsoft sign-in failed, please try again',
+    'oauth.signingIn': 'Signing in with a third-party account, please wait...',
+    'oauth.failed': 'Third-party sign-in failed, please try again',
     'oauth.backToLogin': 'Back to Login',
     'oauth.error': 'Sign-in failed or cancelled',
 
