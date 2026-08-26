@@ -265,9 +265,15 @@ function clearJwtAuth() {
 /**
  * 发起 OAuth2 登录：跳转到 Appwrite 的 OAuth 端点，再由其转发到微软授权页。
  * Appwrite Web SDK v16.1.0 使用位置参数签名：
- *   createOAuth2Session(provider, success, failure, scopes)
- * 会话由 Appwrite 服务端在 OAuth 流程中直接建立（cookie 落在 Appwrite 域名上），
- * 跳回 success URL 后只需 account.get() 确认即可，无需解析 userId/secret。
+ *   createOAuth2Token(provider, success, failure, scopes)
+ *
+ * 使用 createOAuth2Token（而非 createOAuth2Session）以规避跨站 cookie 问题：
+ * - createOAuth2Session 依赖 Appwrite 在自己的域名上种 session cookie，
+ *   页面与 API 跨站时会被浏览器当作第三方 cookie 拦截（Brave/Safari/无痕等），
+ *   导致回跳后 account.get() 拿不到会话，表现为主观上的"登录失败或已取消"。
+ * - createOAuth2Token 流程中，Appwrite 会把 userId + secret 拼到 success URL，
+ *   由回调页调用 createSession(userId, secret) 在当前页面上下文中显式建立会话，
+ *   不依赖跨站 cookie，全浏览器可用。
  *
  * @param {string} provider  provider 标识，如 'microsoft'
  * @param {string} [alertId] 即时出错时用于展示错误提示的 alert 元素 id
@@ -276,7 +282,7 @@ async function oauthLogin(provider, alertId) {
   if (!account && !initAppwrite()) return;
   try {
     const base = window.location.origin;
-    await account.createOAuth2Session(
+    await account.createOAuth2Token(
       provider,
       `${base}/oauth-callback.html`,         // success
       `${base}/oauth-callback.html?error=1`  // failure
@@ -284,30 +290,71 @@ async function oauthLogin(provider, alertId) {
     // 成功后 SDK 会触发整页跳转，此函数不会继续执行
   } catch (err) {
     // 例如 provider 未在 Appwrite Console 启用时抛错
-    if (alertId) showAlert(alertId, err.message || t('oauth.failed'), 'error');
+    console.error('[OAuth] oauthLogin 发起失败:', { type: err.type, code: err.code, message: err.message });
+    if (alertId) showAlert(alertId, t('oauth.failed'), 'error');
   }
 }
 
 /**
- * OAuth 回调页处理：确认会话并跳转仪表盘。
+ * OAuth 回调页处理：用 OAuth 令牌建立会话并跳转仪表盘。
  * 由 oauth-callback.html 在页面加载时调用；返回 false 表示需要展示失败提示。
- * 失败路径（?error=1）或会话未建立时返回 false，由回调页展示错误信息。
+ *
+ * 流程：
+ * 1. 失败路径（?error=1）直接返回 false。
+ * 2. 成功路径：Appwrite 在 success URL 上追加 userId + secret，
+ *    调用 createSession(userId, secret) 显式建立会话（不依赖跨站 cookie）。
+ * 3. 兜底：若已有有效 cookie 会话（如邮箱登录残留），直接 account.get() 通过。
  *
  * @returns {Promise<boolean>} 是否成功建立会话
  */
 async function handleOAuthCallback() {
-  if (!account && !initAppwrite()) return false;
-  if (new URLSearchParams(window.location.search).has('error')) return false;
+  console.log('[OAuth] 回调页进入, 完整 URL:', window.location.href);
 
-  try {
-    const user = await account.get();
-    if (user) {
+  if (!account && !initAppwrite()) {
+    console.error('[OAuth] Appwrite 初始化失败');
+    return false;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const paramsObj = {};
+  params.forEach((v, k) => paramsObj[k] = v);
+  console.log('[OAuth] 查询参数:', paramsObj);
+
+  if (params.has('error')) {
+    console.error('[OAuth] 收到失败标记: error =', params.get('error'));
+    return false;
+  }
+
+  const userId = params.get('userId');
+  const secret = params.get('secret');
+  console.log('[OAuth] userId 存在:', !!userId, '| secret 存在:', !!secret);
+
+  if (userId && secret) {
+    try {
+      console.log('[OAuth] 调用 createSession(userId, secret)...');
+      await account.createSession(userId, secret);
+      console.log('[OAuth] createSession 成功');
       clearJwtAuth(); // 显式 OAuth 会话优先于客户端 JWT 交接
+      navigateTo('dashboard.html');
+      return true;
+    } catch (e) {
+      console.error('[OAuth] createSession 失败:', { type: e.type, code: e.code, message: e.message, stack: e.stack });
+      return false;
+    }
+  }
+
+  // 兜底：已有 cookie 会话直接通过
+  try {
+    console.log('[OAuth] 无 userId/secret，尝试 account.get() 兜底...');
+    const user = await account.get();
+    console.log('[OAuth] 兜底 account.get() 成功:', user && user.$id);
+    if (user) {
+      clearJwtAuth();
       navigateTo('dashboard.html');
       return true;
     }
   } catch (e) {
-    // 会话未建立，落入失败处理
+    console.error('[OAuth] 兜底 account.get() 失败:', { type: e.type, code: e.code, message: e.message, stack: e.stack });
   }
   return false;
 }
