@@ -294,6 +294,9 @@ const translations = {
     'verify.resent': '验证邮件已重新发送',
     'verify.sendFailed': '发送失败',
 
+    // === Currency (Dual Currency Checkout) ===
+    'currency.invalidError': '货币参数错误，已自动切换为美元（3 秒后可重试）',
+
     // === Language Switcher ===
     'lang.switcher': '切换语言'
   },
@@ -587,6 +590,9 @@ const translations = {
     'verify.pleaseLogin': 'Please log in first',
     'verify.resent': 'Verification email resent',
     'verify.sendFailed': 'Failed to send',
+
+    // === Currency (Dual Currency Checkout) ===
+    'currency.invalidError': 'Invalid currency, auto-reset to USD (retry in 3s)',
 
     // === Language Switcher ===
     'lang.switcher': 'Switch Language'

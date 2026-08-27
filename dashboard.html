@@ -321,6 +321,14 @@
     })();
 
     async function loadDashboard() {
+      // 1. 先以默认 USD 渲染一次价格（不等 /geo，避免白屏）
+      renderPlanPrices();
+      // 2. 异步发 /geo，结果回来后再刷新价格和 currency 状态
+      initCurrency().finally(() => {
+        renderPlanPrices();
+      });
+
+      // 原有逻辑（顺序不变）
       renderProfile(currentUser);
       loadSessions();
       loadIdentities();
@@ -335,6 +343,117 @@
     const CHECKOUT_WORKER_URL = 'https://checkout.08012026.xyz';
     // AI 服务 API（GET /usage 返回当月用量，按用户 Bearer JWT 认证）
     const AI_API_BASE = 'https://api.08012026.xyz';
+
+    // === Dual Currency (GeoIP 自动，无手动切换 UI) ===
+    const VALID_CURRENCIES = new Set(["USD", "CNY"]);
+
+    // ============================================
+    // 💰 价格表（提成变量，下次重构改为从后端获取）
+    // ⚠️ 必须与 we-learning-suite/pricing.html 的 PRICES 保持同步！
+    // ============================================
+    // 单位：元（非"分"）。来源：Waffo 后台 2026-08
+    const PRICES = {
+      free:  { USD: 0,    CNY: 0  },   // 免费版：两侧均 0
+      month: { USD: 4.99, CNY: 29 },  // Pro 月包：$4.99 / ¥29
+    };
+
+    let selectedCurrency = "USD";  // 默认 USD，/geo 返回后异步更新
+
+    function isSupportedCurrency(v) { return VALID_CURRENCIES.has(v); }
+
+    /**
+     * 格式化价格（严格使用 Intl.NumberFormat，不手动拼符号）
+     * @param {number} amount 金额（元）
+     * @param {"USD"|"CNY"} currency 币种
+     * @returns {string} 如 "$4.99" 或 "¥29.00"
+     */
+    function formatPrice(amount, currency) {
+      try {
+        const cur = isSupportedCurrency(currency) ? currency : "USD";
+        const locale = cur === "CNY" ? "zh-CN" : "en-US";
+        return new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency: cur,
+          minimumFractionDigits: 2,
+        }).format(amount);
+      } catch (_) {
+        // Intl 不可用时的安全兜底（极罕见）
+        const cur = isSupportedCurrency(currency) ? currency : "USD";
+        const sym = cur === "CNY" ? "¥" : "$";
+        return sym + Number(amount || 0).toFixed(2);
+      }
+    }
+
+    /**
+     * 获取某个 plan 在当前货币下的金额。
+     * 若该货币数据缺失 → fallback 到 USD（安全兜底，不会出现 NaN）
+     * @returns {{amount: number, currency: "USD"|"CNY", fallback: boolean}}
+     */
+    function resolvePlanPrice(plan) {
+      const cur = isSupportedCurrency(selectedCurrency) ? selectedCurrency : "USD";
+      const direct = PRICES[plan]?.[cur];
+      if (typeof direct === "number" && !Number.isNaN(direct)) {
+        return { amount: direct, currency: cur, fallback: false };
+      }
+      // Fallback 到 USD
+      const usdAmt = PRICES[plan]?.USD ?? 0;
+      return { amount: usdAmt, currency: "USD", fallback: true };
+    }
+
+    /**
+     * 异步初始化货币（走 GeoIP，不阻塞渲染）。
+     * 不读 localStorage，不提供手动切换。
+     * 仅 country === "CN" 时显示 CNY，其他所有情况（他国/null/失败/超时）都显示 USD。
+     */
+    async function initCurrency() {
+      let country = null;
+      try {
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 3000);  // 3s 超时兜底
+        const res = await fetch(`${CHECKOUT_WORKER_URL}/geo`, {
+          method: "GET",
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          country = data.country ?? null;
+        }
+      } catch (_) { /* fetch 失败 / 超时 / 非 200 → country = null → 默认 USD */ }
+
+      selectedCurrency = (country === "CN") ? "CNY" : "USD";
+    }
+
+    /**
+     * 重新渲染订阅 Tab 中 free + pro 两张 plan-card 的价格。
+     * 初始渲染（默认 USD）和 /geo 返回后更新都会调用。
+     */
+    function renderPlanPrices() {
+      const freePriceWrap = document.querySelector("#plan-free .plan-price");
+      const proPriceWrap  = document.querySelector("#plan-pro  .plan-price");
+      const periodT = t("sub.perMonth");  // /月 或 /mo
+
+      // --- Free ---
+      const free = resolvePlanPrice("free");
+      if (freePriceWrap) {
+        freePriceWrap.innerHTML = `${formatPrice(free.amount, free.currency)}<span class="plan-period">${periodT}</span>`;
+      }
+
+      // --- Pro ---
+      const pro = resolvePlanPrice("month");
+      if (proPriceWrap) {
+        proPriceWrap.innerHTML = `${formatPrice(pro.amount, pro.currency)}<span class="plan-period">${periodT}</span>`;
+
+        // 兜底警告：该货币缺配时 fallback 到 USD 并显示小提示（正常情况不会命中）
+        proPriceWrap.parentElement.querySelectorAll(".plan-fallback-note").forEach(n => n.remove());
+        if (pro.fallback) {
+          const note = document.createElement("div");
+          note.className = "plan-fallback-note";
+          note.style.cssText = "font-size:0.75rem;color:var(--warning);margin-top:-0.5rem;margin-bottom:0.75rem;";
+          note.textContent = (getCurrentLanguage() === "zh" ? "价格以结账页为准" : "Prices shown at checkout");
+          proPriceWrap.after(note);
+        }
+      }
+    }
 
     async function callFunction(path, method, body) {
       try {
@@ -505,6 +624,9 @@
         showToast(t('sub.verifyEmailFirst'), 'error');
         return;
       }
+      const btn = document.getElementById('btn-pro');
+      const btnOriginal = btn.textContent;
+
       try {
         const jwt = await account.createJWT();
         const token = jwt.jwt || jwt;
@@ -514,15 +636,40 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ plan: 'month' })
+          // ✅ 新增 currency 字段（始终传大写，后端兜底 case-insensitive）
+          body: JSON.stringify({ plan: 'month', currency: selectedCurrency })
         });
-        if (!response.ok) throw new Error('Checkout failed');
-        const data = await response.json();
-        if (data.checkoutUrl) {
-          window.location.href = data.checkoutUrl;
-        } else {
-          throw new Error('No checkout URL');
+        const data = await response.json().catch(() => ({}));
+
+        // ===== 400 invalid_currency 特殊处理 =====
+        if (!response.ok && data.error === 'invalid_currency') {
+          showToast(t('currency.invalidError'), 'error');
+          // 自动重置为 USD
+          selectedCurrency = 'USD';
+          renderPlanPrices();
+          // 3 秒按钮冷却
+          btn.disabled = true;
+          let left = 3;
+          btn.textContent = `${btnOriginal} (${left}s)`;
+          const timer = setInterval(() => {
+            left--;
+            if (left <= 0) {
+              clearInterval(timer);
+              btn.disabled = false;
+              btn.textContent = btnOriginal;
+            } else {
+              btn.textContent = `${btnOriginal} (${left}s)`;
+            }
+          }, 1000);
+          return;
         }
+
+        // ===== 普通错误 =====
+        if (!response.ok) throw new Error(data.error || 'Checkout failed');
+        if (!data.checkoutUrl) throw new Error('No checkout URL in response');
+
+        // ✅ 成功：跳转 Waffo 收银台（Waffo 顶部显示的币种金额应和前端一致）
+        window.location.href = data.checkoutUrl;
       } catch (err) {
         showToast(err.message || t('msg.operationFailed'), 'error');
       }
