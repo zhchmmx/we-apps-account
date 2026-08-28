@@ -248,6 +248,8 @@ const translations = {
     'register.passwordWeak': '密码不符合安全要求',
     'register.registerFailed': '注册失败，请重试',
     'register.success': '注册成功！',
+    'register.turnstileRequired': '请完成人机验证',
+    'register.turnstileFailed': '人机验证失败，请重试',
 
     // === Forgot Password Page ===
     'forgot.title': '找回密码 - We Apps Account',
@@ -545,6 +547,8 @@ const translations = {
     'register.passwordWeak': 'Password does not meet security requirements',
     'register.registerFailed': 'Registration failed, please try again',
     'register.success': 'Registration successful!',
+    'register.turnstileRequired': 'Please complete the verification',
+    'register.turnstileFailed': 'Verification failed, please try again',
 
     // === Forgot Password Page ===
     'forgot.title': 'Recover Password - We Apps Account',

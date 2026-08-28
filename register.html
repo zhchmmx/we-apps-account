@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
@@ -77,6 +78,9 @@
             <label for="terms"><span data-i18n="register.termsText">我已阅读并同意</span> <a href="terms.html" target="_blank" rel="noopener" data-i18n="register.termsLink">服务条款</a><span data-i18n="register.sep1">、</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="register.privacyLink">隐私政策</a> <span data-i18n="register.and">和</span> <a href="aup.html" target="_blank" rel="noopener" data-i18n="register.aupLink">可接受使用政策</a></label>
           </div>
 
+          <!-- Cloudflare Turnstile widget (implicit render; sitekey is public) -->
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAEewNzSa63Jrfkbk" data-theme="light" style="margin-bottom:1.25rem;"></div>
+
           <button type="submit" id="register-btn" class="btn btn-primary">
             <span class="spinner"></span>
             <span class="btn-text" data-i18n="register.registerBtn">创建账户</span>
@@ -143,9 +147,23 @@
         return;
       }
 
+      // Cloudflare Turnstile: ensure the widget was solved, then validate
+      // the token server-side via the Pages Function before creating the account.
+      const fd = new FormData(e.target);
+      if (!fd.get('cf-turnstile-response')) {
+        showAlert('register-alert', t('register.turnstileRequired'), 'error');
+        return;
+      }
+
       setLoading('register-btn', true);
 
       try {
+        // Validate the Turnstile token server-side (POST /api/register)
+        const verifyResp = await fetch('/api/register', { method: 'POST', body: fd });
+        if (!verifyResp.ok) {
+          throw { type: 'turnstile_failed', message: t('register.turnstileFailed') };
+        }
+
         await account.create(
           Appwrite.ID.unique(),
           email,
@@ -163,9 +181,12 @@
           'user_already_exists': t('register.emailExists'),
           'general_rate_limit_exceeded': t('register.rateLimit'),
           'user_password_mismatch': t('register.passwordWeak'),
+          'turnstile_failed': t('register.turnstileFailed'),
         };
         const msg = messages[err.type] || err.message || t('register.registerFailed');
         showAlert('register-alert', msg, 'error');
+        // Turnstile tokens are single-use; reset the widget so the user can retry
+        if (window.turnstile) turnstile.reset();
       } finally {
         setLoading('register-btn', false);
       }

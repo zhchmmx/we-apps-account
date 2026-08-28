@@ -65,6 +65,18 @@ npx serve .
 
 然后在浏览器中访问 `http://localhost:5500`
 
+### 4. 配置 Cloudflare Turnstile（注册页人机验证）
+
+注册页（`register.html`）使用 Cloudflare Turnstile 做人机验证；token 由项目内的 Pages Function（`functions/api/register.js`，挂载官方 `@cloudflare/pages-plugin-turnstile`）在服务端校验。
+
+1. 在 Cloudflare Turnstile 面板创建 widget，记下 **sitekey**（公开）与 **secret**（机密）。widget 的 hostname 白名单需含生产域名 + `localhost` + `127.0.0.1`。
+2. 将 sitekey 填入 `register.html` 中 `.cf-turnstile` 元素的 `data-sitekey`（默认已填：`0x4AAAAAAEewNzSa63Jrfkbk`）。
+3. 在 Cloudflare Pages → Settings → Environment variables 中为 Production 与 Preview 各设置：
+   - `TURNSTILE_SECRET` = 上面的 secret（**不要写入代码或提交仓库**）。
+4. 本地测试需用 `npx wrangler pages dev .` 运行（普通静态服务器无法执行 Pages Function）；`TURNSTILE_SECRET` 可放在 `.dev.vars`（已被 `.gitignore` 忽略）。
+
+> 注意：当前为「verdict-only」模式——token 在 Function 内服务端校验，能拦截走表单的普通机器人；不拦截直接打 Appwrite 公共建号端点的定向攻击。如需端到端强制，见 `functions/api/register.js` 注释与 `.trae/documents/turnstile-integration-plan.md` 中的升级路径。
+
 ## 项目结构
 
 ```
