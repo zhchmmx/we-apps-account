@@ -31,7 +31,7 @@
           <span class="icon">💎</span> <span data-i18n="nav.subscription">订阅管理</span>
         </a>
         <a class="nav-item" data-tab="usage" onclick="switchTab('usage')">
-          <span class="icon">📊</span> <span data-i18n="nav.usage">AI 使用</span>
+          <span class="icon">📊</span> <span data-i18n="nav.usage">使用情况</span>
         </a>
         <div class="nav-section-title" data-i18n="nav.advanced">高级</div>
         <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
@@ -225,6 +225,7 @@
             <div class="plan-price">$0<span class="plan-period" data-i18n="sub.perMonth">/月</span></div>
             <ul class="plan-features">
               <li data-i18n="sub.freeFeature1">每月有限生成服务</li>
+              <li data-i18n="sub.freeFeature2">500 MB 文档存储空间</li>
             </ul>
             <button class="btn btn-secondary" id="btn-free" onclick="activateFreePlan()" data-i18n="sub.activate">激活</button>
           </div>
@@ -234,6 +235,7 @@
             <div class="plan-price">$4.99<span class="plan-period" data-i18n="sub.perMonth">/月</span></div>
             <ul class="plan-features">
               <li data-i18n="sub.proFeature1">每个月 $5 AI 使用额度</li>
+              <li data-i18n="sub.proFeature2">5 GB 文档存储空间</li>
             </ul>
             <button class="btn btn-primary" id="btn-pro" onclick="purchaseProPlan()" data-i18n="sub.purchase">购买</button>
           </div>
@@ -248,6 +250,15 @@
             <span class="badge" id="usage-month"></span>
           </div>
           <div id="usage-content">
+            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 data-i18n="storage.title">存储用量</h3>
+          </div>
+          <div id="storage-usage-content">
             <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
           </div>
         </div>
@@ -334,6 +345,7 @@
       loadIdentities();
       loadSubscription();
       loadUsage();
+      loadStorageUsage();
     }
 
     // ===== Subscription =====
@@ -739,6 +751,72 @@
             <div class="value">$${remaining.toFixed(2)}</div>
           </div>
         </div>`;
+    }
+
+    // ===== Storage Usage =====
+    async function loadStorageUsage() {
+      const el = document.getElementById('storage-usage-content');
+      try {
+        const jwt = await account.createJWT();
+        const token = jwt.jwt || jwt;
+        const response = await fetch(`${AI_API_BASE}/api/files/quota`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error(`Quota request failed (${response.status})`);
+        const result = await response.json();
+        const d = result.data;
+        if (!d || typeof d.usedBytes !== 'number' || typeof d.quotaLimitBytes !== 'number') {
+          throw new Error('Quota data missing');
+        }
+        renderStorageUsage(d);
+      } catch (err) {
+        console.error('Failed to load storage usage:', err);
+        // 静默降级：仅显示 --，无重试按钮、无错误样式、不弹 toast
+        el.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;margin:0;">--</p>`;
+      }
+    }
+
+    function renderStorageUsage(data) {
+      const el = document.getElementById('storage-usage-content');
+      const used = Number(data.usedBytes) || 0;
+      const limit = Number(data.quotaLimitBytes) || 0;
+      // remainingBytes 服务端已 clamp ≥ 0；缺失时前端兜底
+      const remRaw = Number(data.remainingBytes);
+      const remaining = (Number.isFinite(remRaw) && remRaw >= 0) ? remRaw : Math.max(limit - used, 0);
+      const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+      const level = pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : 'ok';
+
+      el.innerHTML = `
+        <div class="usage-summary">
+          <span><strong>${formatBytes(used)}</strong> / ${formatBytes(limit)}</span>
+          <span>${pct.toFixed(1)}%</span>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-bar-fill ${level}" style="width:${pct}%;"></div>
+        </div>
+        <div class="info-grid" style="margin-top:1.25rem;">
+          <div class="info-item">
+            <div class="label">${t('storage.used')}</div>
+            <div class="value">${formatBytes(used)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('storage.total')}</div>
+            <div class="value">${formatBytes(limit)}</div>
+          </div>
+          <div class="info-item">
+            <div class="label">${t('storage.remaining')}</div>
+            <div class="value">${formatBytes(remaining)}</div>
+          </div>
+        </div>`;
+    }
+
+    function formatBytes(bytes) {
+      const n = Number(bytes) || 0;
+      if (n < 1024) return `${n} B`;
+      const units = ['KB', 'MB', 'GB', 'TB'];
+      let val = n, i = -1;
+      do { val /= 1024; i++; } while (val >= 1024 && i < units.length - 1);
+      return `${val.toFixed(1)} ${units[i]}`;
     }
 
     // ===== Mobile Sidebar Toggle =====

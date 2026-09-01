@@ -23,7 +23,7 @@ const translations = {
     'nav.identities': '关联身份',
     'nav.danger': '危险操作',
     'nav.subscription': '订阅管理',
-    'nav.usage': 'AI 使用',
+    'nav.usage': '使用情况',
     'nav.logout': '退出登录',
 
     // === Dashboard Header ===
@@ -34,7 +34,7 @@ const translations = {
     'dash.title.identities': '关联身份',
     'dash.title.danger': '危险操作',
     'dash.title.subscription': '订阅管理',
-    'dash.title.usage': 'AI 使用情况',
+    'dash.title.usage': '使用情况',
     'dash.title.default': '账户管理',
 
     // === Verification Banner ===
@@ -99,7 +99,9 @@ const translations = {
     'sub.proPlan': '付费版',
     'sub.perMonth': '/月',
     'sub.freeFeature1': '每月有限生成服务',
+    'sub.freeFeature2': '500 MB 存储空间',
     'sub.proFeature1': '每个月 $5 AI 使用额度',
+    'sub.proFeature2': '5 GB 存储空间',
     'sub.activate': '激活',
     'sub.activated': '已激活',
     'sub.purchase': '购买',
@@ -123,6 +125,12 @@ const translations = {
     'usage.remaining': '剩余额度',
     'usage.loadFailed': '加载使用情况失败',
     'usage.retry': '重试',
+
+    // === Storage Usage Card ===
+    'storage.title': '存储用量',
+    'storage.used': '已用',
+    'storage.total': '总量',
+    'storage.remaining': '剩余',
 
     // === Modals ===
     'dash.confirmAction': '确认操作',
@@ -322,7 +330,7 @@ const translations = {
     'nav.identities': 'Linked Identities',
     'nav.danger': 'Danger Zone',
     'nav.subscription': 'Subscription',
-    'nav.usage': 'AI Usage',
+    'nav.usage': 'Usage',
     'nav.logout': 'Log Out',
 
     // === Dashboard Header ===
@@ -333,7 +341,7 @@ const translations = {
     'dash.title.identities': 'Linked Identities',
     'dash.title.danger': 'Danger Zone',
     'dash.title.subscription': 'Subscription',
-    'dash.title.usage': 'AI Usage',
+    'dash.title.usage': 'Usage',
     'dash.title.default': 'Account Management',
 
     // === Verification Banner ===
@@ -398,7 +406,9 @@ const translations = {
     'sub.proPlan': 'Pro',
     'sub.perMonth': '/mo',
     'sub.freeFeature1': 'Limited AI generations per month',
+    'sub.freeFeature2': '500 MB storage',
     'sub.proFeature1': '$5 AI usage credit per month',
+    'sub.proFeature2': '5 GB storage',
     'sub.activate': 'Activate',
     'sub.activated': 'Activated',
     'sub.purchase': 'Purchase',
@@ -422,6 +432,12 @@ const translations = {
     'usage.remaining': 'Remaining',
     'usage.loadFailed': 'Failed to load usage data',
     'usage.retry': 'Retry',
+
+    // === Storage Usage Card ===
+    'storage.title': 'Storage Usage',
+    'storage.used': 'Used',
+    'storage.total': 'Total',
+    'storage.remaining': 'Remaining',
 
     // === Modals ===
     'dash.confirmAction': 'Confirm Action',

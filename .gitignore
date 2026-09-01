@@ -39,3 +39,6 @@ coverage/
 *.map
 .cache/
 temp/
+
+.wrangler
+.trae
