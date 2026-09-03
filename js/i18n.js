@@ -172,6 +172,7 @@ const translations = {
     'pwReq.uppercase': '至少一个大写字母',
     'pwReq.lowercase': '至少一个小写字母',
     'pwReq.symbol': '至少一个符号（如 !@#$%）',
+    'pwReq.digit': '至少一个数字',
 
     // === Login Page ===
     'login.title': '登录 - We Apps Account',
@@ -479,6 +480,7 @@ const translations = {
     'pwReq.uppercase': 'At least one uppercase letter',
     'pwReq.lowercase': 'At least one lowercase letter',
     'pwReq.symbol': 'At least one symbol (e.g. !@#$%)',
+    'pwReq.digit': 'At least one number',
 
     // === Login Page ===
     'login.title': 'Login - We Apps Account',

@@ -69,6 +69,7 @@ function validatePassword(password) {
   return password.length >= 8 && password.length <= 256
     && /[A-Z]/.test(password)
     && /[a-z]/.test(password)
+    && /[0-9]/.test(password)
     && /[^A-Za-z0-9]/.test(password);
 }
 
@@ -115,6 +116,7 @@ function updatePasswordRequirements(password, containerId) {
     { key: 'pwReq.uppercase', ok: /[A-Z]/.test(password) },
     { key: 'pwReq.lowercase', ok: /[a-z]/.test(password) },
     { key: 'pwReq.symbol',    ok: /[^A-Za-z0-9]/.test(password) },
+    { key: 'pwReq.digit',     ok: /[0-9]/.test(password) },
   ];
 
   const items = container.querySelectorAll('.pw-req-item');
