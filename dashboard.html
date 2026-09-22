@@ -3,71 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n-page-title="dash.title.default">账户管理 - We Apps Account</title>
+  <title data-i18n-page-title="dash.title.default">We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dash-page">
   <div class="dashboard-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <img src="assets/We.png" alt="We">
-        <span>We Apps Account</span>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-section-title" data-i18n="nav.account">账户</div>
-        <a class="nav-item active" data-tab="profile" onclick="switchTab('profile')">
-          <span class="icon">👤</span> <span data-i18n="nav.profile">个人信息</span>
-        </a>
-        <a class="nav-item" data-tab="security" onclick="switchTab('security')">
-          <span class="icon">🔒</span> <span data-i18n="nav.security">安全设置</span>
-        </a>
-        <a class="nav-item" data-tab="sessions" onclick="switchTab('sessions')">
-          <span class="icon">📱</span> <span data-i18n="nav.sessions">活跃会话</span>
-        </a>
-        <a class="nav-item" data-tab="subscription" onclick="switchTab('subscription')">
-          <span class="icon">💎</span> <span data-i18n="nav.subscription">订阅管理</span>
-        </a>
-        <a class="nav-item" data-tab="usage" onclick="switchTab('usage')">
-          <span class="icon">📊</span> <span data-i18n="nav.usage">使用情况</span>
-        </a>
-        <div class="nav-section-title" data-i18n="nav.advanced">高级</div>
-        <a class="nav-item" data-tab="identities" onclick="switchTab('identities')">
-          <span class="icon">🔗</span> <span data-i18n="nav.identities">关联身份</span>
-        </a>
-        <a class="nav-item" data-tab="danger" onclick="switchTab('danger')">
-          <span class="icon">⚠️</span> <span data-i18n="nav.danger">危险操作</span>
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <a class="nav-item" onclick="logout()">
-          <span class="icon">🚪</span> <span data-i18n="nav.logout">退出登录</span>
-        </a>
-      </div>
-    </aside>
+    <aside class="sidebar" id="sidebar"></aside>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
-      <div class="dashboard-header">
-        <div class="dashboard-header-left">
-          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">
-            <span></span><span></span><span></span>
-          </button>
-          <h1 id="page-title"><span data-i18n="dash.title.profile">个人信息</span></h1>
+    <header class="appbar">
+      <a class="brand" href="dashboard.html">
+        <img src="assets/We.png" alt="We Apps" class="brand-mark">
+        <span class="brand-name">We Apps Account</span>
+      </a>
+      <div class="appbar-actions">
+        <button class="menu-toggle" id="menu-toggle" aria-label="nav" style="display:none;"></button>
+        <div id="lang-switcher-container"></div>
+        <div class="user-badge">
+          <div class="user-avatar" id="avatar-initial">W</div>
+          <span id="user-name-display" data-i18n="dash.loading">加载中...</span>
         </div>
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <div id="lang-switcher-container"></div>
-          <div class="user-badge">
-            <div class="user-avatar" id="avatar-initial">W</div>
-            <span id="user-name-display" data-i18n="dash.loading">加载中...</span>
-          </div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="logout()" data-i18n="nav.logout">退出登录</button>
+      </div>
+    </header>
+
+    <nav class="tabrail" id="tabrail" aria-label="账户">
+      <button type="button" class="tabpill nav-item active" data-tab="home" onclick="switchTab('home')">
+        <span class="tab-num">01</span><span>首页</span>
+      </button>
+      <button type="button" class="tabpill nav-item" data-tab="profile" onclick="switchTab('profile')">
+        <span class="tab-num">02</span><span data-i18n="nav.profile">个人信息</span>
+      </button>
+      <button type="button" class="tabpill nav-item" data-tab="security" onclick="switchTab('security')">
+        <span class="tab-num">03</span><span data-i18n="nav.security">安全设置</span>
+      </button>
+      <button type="button" class="tabpill nav-item" data-tab="subscription" onclick="switchTab('subscription')">
+        <span class="tab-num">04</span><span data-i18n="nav.subscription">订阅管理</span>
+      </button>
+    </nav>
+
+    <main class="sheet" id="dashboard-main">
+      <div class="sheet-head">
+        <div class="sheet-index" id="page-index">01</div>
+        <div>
+          <h1 id="page-title">首页</h1>
+          <p id="page-desc">套餐、额度、账户，都在这儿</p>
         </div>
       </div>
 
-      <!-- Verification Banner -->
       <div class="verify-banner" id="verify-banner">
         <div class="banner-text">
           <span>⚠️</span>
@@ -76,18 +62,61 @@
         <button class="btn btn-secondary btn-sm" onclick="sendVerification()" data-i18n="dash.verifyNow">立即验证</button>
       </div>
 
-      <!-- ===== Profile Tab ===== -->
-      <div class="page-section active" id="tab-profile">
+      <!-- ===== 01 首页 ===== -->
+      <div class="page-section active" id="tab-home">
         <div class="card">
-          <div class="card-header">
-            <h3 data-i18n="dash.basicInfo">基本信息</h3>
+          <div class="home-hero">
+            <div class="home-hero-avatar" id="home-avatar">W</div>
+            <div class="home-hero-meta">
+              <div class="hello">你好，<em id="home-name">用户</em></div>
+              <p id="home-email">—</p>
+            </div>
+            <span class="badge" id="home-verify-badge">—</span>
+          </div>
+          <div class="quick-row">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('profile')">修改资料</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('security')">修改密码</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('subscription')">管理订阅</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">当前套餐</div>
+            <div class="stat-value" id="home-plan-name">—</div>
+            <div class="stat-sub" id="home-plan-sub">加载中…</div>
+            <a class="stat-link" href="javascript:void(0)" onclick="switchTab('subscription')">查看详情 →</a>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">本月 AI</div>
+            <div class="stat-value" id="home-ai-value">—</div>
+            <div class="stat-sub" id="home-ai-sub">加载中…</div>
+            <a class="stat-link" href="javascript:void(0)" onclick="switchTab('subscription')">用量明细 →</a>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">存储用量</div>
+            <div class="stat-value" id="home-storage-value">—</div>
+            <div class="stat-sub" id="home-storage-sub">加载中…</div>
+            <a class="stat-link" href="javascript:void(0)" onclick="switchTab('subscription')">配额明细 →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 02 资料 ===== -->
+      <div class="page-section" id="tab-profile">
+        <div class="card">
+          <div class="profile-hero">
+            <div class="profile-hero-avatar" id="profile-avatar">W</div>
+            <div class="profile-hero-meta">
+              <h2 id="profile-display-name">—</h2>
+              <p id="profile-display-email">—</p>
+            </div>
             <span class="badge" id="verify-badge" data-i18n="dash.unverified">未验证</span>
           </div>
+          <div class="card-header">
+            <h3 data-i18n="dash.basicInfo">基本信息</h3>
+          </div>
           <div class="info-grid">
-            <div class="info-item">
-              <div class="label" data-i18n="dash.userId">用户 ID</div>
-              <div class="value" id="info-user-id">-</div>
-            </div>
             <div class="info-item">
               <div class="label" data-i18n="dash.name">姓名</div>
               <div class="value" id="info-name">-</div>
@@ -100,22 +129,17 @@
               <div class="label" data-i18n="dash.created">注册时间</div>
               <div class="value" id="info-created">-</div>
             </div>
-          </div>
-        </div>
-
-        <div class="card" id="subscription-info-card">
-          <div class="card-header">
-            <h3 data-i18n="dash.currentPlan">当前订阅</h3>
-          </div>
-          <div id="profile-subscription-content">
-            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+            <div class="info-item">
+              <div class="label" data-i18n="dash.userId">用户 ID</div>
+              <div class="value mono" id="info-user-id">-</div>
+            </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header"><h3 data-i18n="dash.changeName">修改姓名</h3></div>
-          <form id="update-name-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
-            <div class="form-group" style="flex:1;margin-bottom:0;">
+          <form id="update-name-form" class="inline-form">
+            <div class="form-group grow">
               <input type="text" id="new-name" class="form-input" data-i18n-placeholder="dash.namePlaceholder" placeholder="输入新姓名">
             </div>
             <button type="submit" class="btn btn-secondary btn-sm" data-i18n="common.save">保存</button>
@@ -124,19 +148,42 @@
 
         <div class="card">
           <div class="card-header"><h3 data-i18n="dash.changeEmail">修改邮箱</h3></div>
-          <form id="update-email-form" style="display:flex;gap:0.75rem;align-items:flex-end;">
-            <div class="form-group" style="flex:1;margin-bottom:0;">
+          <form id="update-email-form" class="inline-form">
+            <div class="form-group grow">
               <input type="email" id="new-email" class="form-input" data-i18n-placeholder="dash.emailPlaceholder" placeholder="新邮箱地址">
             </div>
-            <div class="form-group" style="width:200px;margin-bottom:0;">
+            <div class="form-group fixed">
               <input type="password" id="email-password" class="form-input" data-i18n-placeholder="dash.currentPassword" placeholder="当前密码">
             </div>
             <button type="submit" class="btn btn-secondary btn-sm" data-i18n="common.update">更新</button>
           </form>
         </div>
+
+        <div class="card danger-card">
+          <div class="card-header">
+            <h3 style="color:var(--error);" data-i18n="dash.dangerZone">危险操作</h3>
+          </div>
+          <p style="color:var(--ink-2);font-size:0.9rem;margin-bottom:1.25rem;" data-i18n="dash.dangerDesc">
+            以下操作不可撤销，请谨慎操作。
+          </p>
+          <div class="danger-row">
+            <div>
+              <h4 data-i18n="dash.disableAccount">禁用账户</h4>
+              <p data-i18n="dash.disableDesc">禁用后您将无法登录，但数据不会删除。</p>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="confirmDisableAccount()" data-i18n="dash.disableAccount">禁用账户</button>
+          </div>
+          <div class="danger-row">
+            <div>
+              <h4 data-i18n="dash.deleteAccount">删除账户</h4>
+              <p data-i18n="dash.deleteDesc">永久删除您的账户和所有相关数据。</p>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()" data-i18n="dash.deleteAccount">删除账户</button>
+          </div>
+        </div>
       </div>
 
-      <!-- ===== Security Tab ===== -->
+      <!-- ===== 03 安全 ===== -->
       <div class="page-section" id="tab-security">
         <div class="card">
           <div class="card-header"><h3 data-i18n="dash.changePassword">修改密码</h3></div>
@@ -145,7 +192,7 @@
               <label data-i18n="dash.currentPasswordLabel">当前密码</label>
               <div class="password-wrapper">
                 <input type="password" id="sec-old-password" class="form-input" data-i18n-placeholder="dash.currentPasswordPlaceholder" placeholder="输入当前密码">
-                <button type="button" class="password-toggle" onclick="togglePassword('sec-old-password', this)">👁</button>
+                <button type="button" class="password-toggle" onclick="togglePassword('sec-old-password', this)"></button>
               </div>
             </div>
             <div class="form-group">
@@ -177,15 +224,12 @@
 
         <div class="card" id="verify-card">
           <div class="card-header"><h3 data-i18n="dash.emailVerify">邮箱验证</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;" data-i18n="dash.emailVerifyDesc">
+          <p style="color:var(--ink-2);font-size:0.9rem;margin-bottom:1rem;" data-i18n="dash.emailVerifyDesc">
             验证您的邮箱地址以确保账户安全。
           </p>
           <button id="send-verify-btn" class="btn btn-secondary btn-sm" onclick="sendVerification()" data-i18n="dash.sendVerifyEmail">发送验证邮件</button>
         </div>
-      </div>
 
-      <!-- ===== Sessions Tab ===== -->
-      <div class="page-section" id="tab-sessions">
         <div class="card">
           <div class="card-header">
             <h3 data-i18n="dash.activeSessions">活跃会话</h3>
@@ -194,13 +238,10 @@
             <li class="empty-state"><div class="icon">📱</div><p data-i18n="dash.loadingSessions">加载会话中...</p></li>
           </ul>
         </div>
-      </div>
 
-      <!-- ===== Identities Tab ===== -->
-      <div class="page-section" id="tab-identities">
         <div class="card">
           <div class="card-header"><h3 data-i18n="dash.linkedIdentities">关联身份</h3></div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;" data-i18n="dash.linkedIdentitiesDesc">
+          <p style="color:var(--ink-2);font-size:0.9rem;margin-bottom:1.15rem;" data-i18n="dash.linkedIdentitiesDesc">
             管理通过第三方服务关联的身份。
           </p>
           <ul class="session-list" id="identities-list">
@@ -209,14 +250,14 @@
         </div>
       </div>
 
-      <!-- ===== Subscription Tab ===== -->
+      <!-- ===== 04 订阅 ===== -->
       <div class="page-section" id="tab-subscription">
         <div class="card" id="subscription-status-card">
           <div class="card-header">
             <h3 data-i18n="sub.currentStatus">当前订阅状态</h3>
           </div>
           <div id="subscription-status-content">
-            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+            <p style="color:var(--ink-3);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
           </div>
         </div>
 
@@ -241,17 +282,14 @@
             <button class="btn btn-primary" id="btn-pro" onclick="purchaseProPlan()" data-i18n="sub.purchase">购买</button>
           </div>
         </div>
-      </div>
 
-      <!-- ===== AI Usage Tab ===== -->
-      <div class="page-section" id="tab-usage">
-        <div class="card">
+        <div class="card" style="margin-top:1rem;">
           <div class="card-header">
             <h3 data-i18n="usage.title">本月 AI 使用</h3>
             <span class="badge" id="usage-month"></span>
           </div>
           <div id="usage-content">
-            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
+            <p style="color:var(--ink-3);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
           </div>
         </div>
 
@@ -260,42 +298,13 @@
             <h3 data-i18n="storage.title">存储用量</h3>
           </div>
           <div id="storage-usage-content">
-            <p style="color:var(--text-muted);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== Danger Zone Tab ===== -->
-      <div class="page-section" id="tab-danger">
-        <div class="card" style="border-color: rgba(198,40,40,0.3);">
-          <div class="card-header">
-            <h3 style="color:var(--error);" data-i18n="dash.dangerZone">危险操作</h3>
-          </div>
-          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;" data-i18n="dash.dangerDesc">
-            以下操作不可撤销，请谨慎操作。
-          </p>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:1rem;">
-            <div>
-              <h4 style="font-size:0.95rem;" data-i18n="dash.disableAccount">禁用账户</h4>
-              <p style="font-size:0.8rem;color:var(--text-muted);" data-i18n="dash.disableDesc">禁用后您将无法登录，但数据不会删除。</p>
-            </div>
-            <button class="btn btn-danger btn-sm" onclick="confirmDisableAccount()" data-i18n="dash.disableAccount">禁用账户</button>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:var(--bg);border-radius:var(--radius-sm);">
-            <div>
-              <h4 style="font-size:0.95rem;" data-i18n="dash.deleteAccount">删除账户</h4>
-              <p style="font-size:0.8rem;color:var(--text-muted);" data-i18n="dash.deleteDesc">永久删除您的账户和所有相关数据。</p>
-            </div>
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()" data-i18n="dash.deleteAccount">删除账户</button>
+            <p style="color:var(--ink-3);font-size:0.9rem;" data-i18n="common.loading">加载中...</p>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Modal -->
   <div class="modal-overlay" id="confirm-modal">
     <div class="modal">
       <h3 id="modal-title" data-i18n="dash.confirmAction">确认操作</h3>
@@ -317,13 +326,9 @@
     let currentUser = null;
     let pendingAction = null;
 
-    // Inject language switcher
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // ===== Auth Guard =====
     (async () => {
-      // Client-app handoff: ?jwt= auto-login takes priority, then a
-      // persisted handoff JWT from an earlier page, then existing session
       currentUser = await loginWithUrlJwt() || await restoreJwtAuth() || await checkAuth();
       if (!currentUser) {
         navigateTo('index.html');
@@ -333,14 +338,8 @@
     })();
 
     async function loadDashboard() {
-      // 1. 先以默认 USD 渲染一次价格（不等 /geo，避免白屏）
       renderPlanPrices();
-      // 2. 异步发 /geo，结果回来后再刷新价格和 currency 状态
-      initCurrency().finally(() => {
-        renderPlanPrices();
-      });
-
-      // 原有逻辑（顺序不变）
+      initCurrency().finally(() => renderPlanPrices());
       renderProfile(currentUser);
       loadSessions();
       loadIdentities();
@@ -349,37 +348,21 @@
       loadStorageUsage();
     }
 
-    // ===== Subscription =====
     let currentSubscription = null;
     const APPWRITE_FUNCTION_ID = '6a784dd9002e0069cf39';
-    // CF Worker Waffo 收银台代理（POST {url}/checkout 创建结账会话）
     const CHECKOUT_WORKER_URL = 'https://checkout.08012026.xyz';
-    // AI 服务 API（GET /usage 返回当月用量，按用户 Bearer JWT 认证）
     const AI_API_BASE = 'https://api.08012026.xyz';
-
-    // === Dual Currency (GeoIP 自动，无手动切换 UI) ===
     const VALID_CURRENCIES = new Set(["USD", "CNY"]);
 
-    // ============================================
-    // 💰 价格表（提成变量，下次重构改为从后端获取）
-    // ⚠️ 必须与 we-learning-suite/pricing.html 的 PRICES 保持同步！
-    // ============================================
-    // 单位：元（非"分"）。来源：Waffo 后台 2026-08
     const PRICES = {
-      free:  { USD: 0,    CNY: 0  },   // 免费版：两侧均 0
-      month: { USD: 4.99, CNY: 29 },  // Pro 月包：$4.99 / ¥29
+      free:  { USD: 0,    CNY: 0  },
+      month: { USD: 4.99, CNY: 29 },
     };
 
-    let selectedCurrency = "USD";  // 默认 USD，/geo 返回后异步更新
+    let selectedCurrency = "USD";
 
     function isSupportedCurrency(v) { return VALID_CURRENCIES.has(v); }
 
-    /**
-     * 格式化价格（严格使用 Intl.NumberFormat，不手动拼符号）
-     * @param {number} amount 金额（元）
-     * @param {"USD"|"CNY"} currency 币种
-     * @returns {string} 如 "$4.99" 或 "¥29.00"
-     */
     function formatPrice(amount, currency) {
       try {
         const cur = isSupportedCurrency(currency) ? currency : "USD";
@@ -390,39 +373,27 @@
           minimumFractionDigits: 2,
         }).format(amount);
       } catch (_) {
-        // Intl 不可用时的安全兜底（极罕见）
         const cur = isSupportedCurrency(currency) ? currency : "USD";
         const sym = cur === "CNY" ? "¥" : "$";
         return sym + Number(amount || 0).toFixed(2);
       }
     }
 
-    /**
-     * 获取某个 plan 在当前货币下的金额。
-     * 若该货币数据缺失 → fallback 到 USD（安全兜底，不会出现 NaN）
-     * @returns {{amount: number, currency: "USD"|"CNY", fallback: boolean}}
-     */
     function resolvePlanPrice(plan) {
       const cur = isSupportedCurrency(selectedCurrency) ? selectedCurrency : "USD";
       const direct = PRICES[plan]?.[cur];
       if (typeof direct === "number" && !Number.isNaN(direct)) {
         return { amount: direct, currency: cur, fallback: false };
       }
-      // Fallback 到 USD
       const usdAmt = PRICES[plan]?.USD ?? 0;
       return { amount: usdAmt, currency: "USD", fallback: true };
     }
 
-    /**
-     * 异步初始化货币（走 GeoIP，不阻塞渲染）。
-     * 不读 localStorage，不提供手动切换。
-     * 仅 country === "CN" 时显示 CNY，其他所有情况（他国/null/失败/超时）都显示 USD。
-     */
     async function initCurrency() {
       let country = null;
       try {
         const controller = new AbortController();
-        setTimeout(() => controller.abort(), 3000);  // 3s 超时兜底
+        setTimeout(() => controller.abort(), 3000);
         const res = await fetch(`${CHECKOUT_WORKER_URL}/geo`, {
           method: "GET",
           signal: controller.signal,
@@ -431,32 +402,23 @@
           const data = await res.json();
           country = data.country ?? null;
         }
-      } catch (_) { /* fetch 失败 / 超时 / 非 200 → country = null → 默认 USD */ }
-
+      } catch (_) {}
       selectedCurrency = (country === "CN") ? "CNY" : "USD";
     }
 
-    /**
-     * 重新渲染订阅 Tab 中 free + pro 两张 plan-card 的价格。
-     * 初始渲染（默认 USD）和 /geo 返回后更新都会调用。
-     */
     function renderPlanPrices() {
       const freePriceWrap = document.querySelector("#plan-free .plan-price");
       const proPriceWrap  = document.querySelector("#plan-pro  .plan-price");
-      const periodT = t("sub.perMonth");  // /月 或 /mo
+      const periodT = t("sub.perMonth");
 
-      // --- Free ---
       const free = resolvePlanPrice("free");
       if (freePriceWrap) {
         freePriceWrap.innerHTML = `${formatPrice(free.amount, free.currency)}<span class="plan-period">${periodT}</span>`;
       }
 
-      // --- Pro ---
       const pro = resolvePlanPrice("month");
       if (proPriceWrap) {
         proPriceWrap.innerHTML = `${formatPrice(pro.amount, pro.currency)}<span class="plan-period">${periodT}</span>`;
-
-        // 兜底警告：该货币缺配时 fallback 到 USD 并显示小提示（正常情况不会命中）
         proPriceWrap.parentElement.querySelectorAll(".plan-fallback-note").forEach(n => n.remove());
         if (pro.fallback) {
           const note = document.createElement("div");
@@ -469,31 +431,27 @@
     }
 
     async function callFunction(path, method, body) {
-      try {
-        const jwt = await account.createJWT();
-        const token = jwt.jwt || jwt;
-        const headers = {
-          'Content-Type': 'application/json',
-          'X-Appwrite-Project': APPWRITE_CONFIG.projectId,
-          'X-Appwrite-JWT': token
-        };
-        const response = await fetch(
-          `${APPWRITE_CONFIG.endpoint}/functions/${APPWRITE_FUNCTION_ID}/executions`,
-          { method: 'POST', headers, body: JSON.stringify({ path: path, method: method, body: JSON.stringify(body || {}) }) }
-        );
-        if (!response.ok) {
-          const err = await response.json().catch(() => ({}));
-          throw new Error(err.message || `Function call failed (${response.status})`);
-        }
-        const result = await response.json();
-        if (result.responseStatusCode && result.responseStatusCode >= 400) {
-          const errBody = JSON.parse(result.responseBody || '{}');
-          throw new Error(errBody.message || `Error ${result.responseStatusCode}`);
-        }
-        return JSON.parse(result.responseBody || '{}');
-      } catch (err) {
-        throw err;
+      const jwt = await account.createJWT();
+      const token = jwt.jwt || jwt;
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Appwrite-Project': APPWRITE_CONFIG.projectId,
+        'X-Appwrite-JWT': token
+      };
+      const response = await fetch(
+        `${APPWRITE_CONFIG.endpoint}/functions/${APPWRITE_FUNCTION_ID}/executions`,
+        { method: 'POST', headers, body: JSON.stringify({ path: path, method: method, body: JSON.stringify(body || {}) }) }
+      );
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || `Function call failed (${response.status})`);
       }
+      const result = await response.json();
+      if (result.responseStatusCode && result.responseStatusCode >= 400) {
+        const errBody = JSON.parse(result.responseBody || '{}');
+        throw new Error(errBody.message || `Error ${result.responseStatusCode}`);
+      }
+      return JSON.parse(result.responseBody || '{}');
     }
 
     async function loadSubscription() {
@@ -501,13 +459,12 @@
         const data = await callFunction('/subscription/me', 'GET');
         currentSubscription = data.subscription || null;
         renderSubscription();
-        updateProfileSubscription();
+        updateHomeSummary();
       } catch (err) {
         console.error('Failed to load subscription:', err);
         document.getElementById('subscription-status-content').innerHTML =
           `<p style="color:var(--error);font-size:0.9rem;">${t('sub.loadFailed')}</p>`;
-        document.getElementById('profile-subscription-content').innerHTML =
-          `<p style="color:var(--error);font-size:0.9rem;">${t('sub.loadFailed')}</p>`;
+        updateHomeSummary();
       }
     }
 
@@ -517,10 +474,7 @@
       const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
 
       if (!sub) {
-        el.innerHTML = `
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <span style="font-weight:500;">${t('sub.noSubscription')}</span>
-          </div>`;
+        el.innerHTML = `<div style="display:flex;align-items:center;gap:0.75rem;"><span style="font-weight:500;">${t('sub.noSubscription')}</span></div>`;
         updatePlanButtons(null);
         return;
       }
@@ -529,9 +483,7 @@
       const isActive = sub.status === 'active';
       const statusKey = isActive ? 'sub.statusActive' : 'sub.statusExpired';
       const statusClass = isActive ? 'status-active' : 'status-expired';
-      const expiresStr = sub.endDate
-        ? new Date(sub.endDate).toLocaleString(locale)
-        : t('dash.notSet');
+      const expiresStr = sub.endDate ? new Date(sub.endDate).toLocaleString(locale) : t('dash.notSet');
 
       el.innerHTML = `
         <div class="sub-status-grid">
@@ -548,36 +500,24 @@
             <div class="value">${expiresStr}</div>
           </div>
         </div>`;
-
       updatePlanButtons(sub);
     }
 
-    function updateProfileSubscription() {
-      const el = document.getElementById('profile-subscription-content');
+    function updateHomeSummary() {
       const sub = currentSubscription;
       const locale = getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US';
+      const planNameEl = document.getElementById('home-plan-name');
+      const planSubEl = document.getElementById('home-plan-sub');
+      if (!planNameEl || !planSubEl) return;
 
       if (!sub) {
-        el.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">${t('sub.noSubscription')}</p>`;
-        return;
+        planNameEl.textContent = t('sub.freePlan');
+        planSubEl.textContent = t('sub.noSubscription');
+      } else {
+        planNameEl.textContent = t(sub.planType === 'premium' ? 'sub.proPlan' : 'sub.freePlan');
+        const expiresStr = sub.endDate ? new Date(sub.endDate).toLocaleDateString(locale) : t('dash.notSet');
+        planSubEl.textContent = (sub.status === 'active' ? t('sub.statusActive') : t('sub.statusExpired')) + ' · ' + t('sub.expiresAt') + ' ' + expiresStr;
       }
-
-      const planKey = sub.planType === 'premium' ? 'sub.proPlan' : 'sub.freePlan';
-      const expiresStr = sub.endDate
-        ? new Date(sub.endDate).toLocaleString(locale)
-        : t('dash.notSet');
-
-      el.innerHTML = `
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="label">${t('sub.planType')}</div>
-            <div class="value">${t(planKey)}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">${t('sub.expiresAt')}</div>
-            <div class="value">${expiresStr}</div>
-          </div>
-        </div>`;
     }
 
     function updatePlanButtons(sub) {
@@ -586,7 +526,6 @@
       const freeCard = document.getElementById('plan-free');
       const proCard = document.getElementById('plan-pro');
 
-      // Reset
       freeCard.classList.remove('plan-current');
       proCard.classList.remove('plan-current');
 
@@ -649,18 +588,14 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          // ✅ 新增 currency 字段（始终传大写，后端兜底 case-insensitive）
           body: JSON.stringify({ plan: 'month', currency: selectedCurrency })
         });
         const data = await response.json().catch(() => ({}));
 
-        // ===== 400 invalid_currency 特殊处理 =====
         if (!response.ok && data.error === 'invalid_currency') {
           showToast(t('currency.invalidError'), 'error');
-          // 自动重置为 USD
           selectedCurrency = 'USD';
           renderPlanPrices();
-          // 3 秒按钮冷却
           btn.disabled = true;
           let left = 3;
           btn.textContent = `${btnOriginal} (${left}s)`;
@@ -677,18 +612,14 @@
           return;
         }
 
-        // ===== 普通错误 =====
         if (!response.ok) throw new Error(data.error || 'Checkout failed');
         if (!data.checkoutUrl) throw new Error('No checkout URL in response');
-
-        // ✅ 成功：跳转 Waffo 收银台（Waffo 顶部显示的币种金额应和前端一致）
         window.location.href = data.checkoutUrl;
       } catch (err) {
         showToast(err.message || t('msg.operationFailed'), 'error');
       }
     }
 
-    // ===== AI Usage =====
     async function loadUsage() {
       const el = document.getElementById('usage-content');
       try {
@@ -701,6 +632,7 @@
         const result = await response.json();
         if (!result.data) throw new Error('Usage data missing');
         renderUsage(result.data);
+        updateHomeAi(result.data);
       } catch (err) {
         console.error('Failed to load AI usage:', err);
         el.innerHTML = `
@@ -708,13 +640,27 @@
             <p style="color:var(--error);font-size:0.9rem;margin:0;">${t('usage.loadFailed')}</p>
             <button class="btn btn-secondary btn-sm" onclick="loadUsage()">${t('usage.retry')}</button>
           </div>`;
+        const ai = document.getElementById('home-ai-value');
+        const ais = document.getElementById('home-ai-sub');
+        if (ai) ai.textContent = '--';
+        if (ais) ais.textContent = t('usage.loadFailed');
       }
+    }
+
+    function updateHomeAi(data) {
+      const cost = Number(data.cost) || 0;
+      const quotaLimit = currentSubscription?.quotaLimit ?? 5;
+      const remaining = Math.max(quotaLimit - cost, 0);
+      const value = document.getElementById('home-ai-value');
+      const sub = document.getElementById('home-ai-sub');
+      if (value) value.textContent = `$${cost.toFixed(2)}`;
+      if (sub) sub.textContent = `${t('usage.remaining')} $${remaining.toFixed(2)} / $${quotaLimit.toFixed(2)}`;
     }
 
     function renderUsage(data) {
       const el = document.getElementById('usage-content');
       const cost = Number(data.cost) || 0;
-      const quotaLimit = currentSubscription?.quotaLimit ?? 5; // 服务端拿不到兜底 5
+      const quotaLimit = currentSubscription?.quotaLimit ?? 5;
       const pct = quotaLimit > 0 ? Math.min((cost / quotaLimit) * 100, 100) : 0;
       const level = pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : 'ok';
       const remaining = Math.max(quotaLimit - cost, 0);
@@ -730,14 +676,10 @@
         <div class="usage-bar">
           <div class="usage-bar-fill ${level}" style="width:${pct}%;"></div>
         </div>
-        <div class="info-grid" style="margin-top:1.25rem;">
+        <div class="info-grid" style="margin-top:1.15rem;">
           <div class="info-item">
             <div class="label">${t('usage.requests')}</div>
             <div class="value">${(Number(data.requests) || 0).toLocaleString(locale)}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">${t('usage.cost')}</div>
-            <div class="value">$${cost.toFixed(2)}</div>
           </div>
           <div class="info-item">
             <div class="label">${t('usage.tokensIn')}</div>
@@ -754,7 +696,6 @@
         </div>`;
     }
 
-    // ===== Storage Usage =====
     async function loadStorageUsage() {
       const el = document.getElementById('storage-usage-content');
       try {
@@ -770,18 +711,32 @@
           throw new Error('Quota data missing');
         }
         renderStorageUsage(d);
+        updateHomeStorage(d);
       } catch (err) {
         console.error('Failed to load storage usage:', err);
-        // 静默降级：仅显示 --，无重试按钮、无错误样式、不弹 toast
-        el.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;margin:0;">--</p>`;
+        el.innerHTML = `<p style="color:var(--ink-3);font-size:0.9rem;margin:0;">--</p>`;
+        const v = document.getElementById('home-storage-value');
+        const s = document.getElementById('home-storage-sub');
+        if (v) v.textContent = '--';
+        if (s) s.textContent = '--';
       }
+    }
+
+    function updateHomeStorage(data) {
+      const used = Number(data.usedBytes) || 0;
+      const limit = Number(data.quotaLimitBytes) || 0;
+      const remRaw = Number(data.remainingBytes);
+      const remaining = (Number.isFinite(remRaw) && remRaw >= 0) ? remRaw : Math.max(limit - used, 0);
+      const value = document.getElementById('home-storage-value');
+      const sub = document.getElementById('home-storage-sub');
+      if (value) value.textContent = formatBytes(used);
+      if (sub) sub.textContent = `${t('storage.remaining')} ${formatBytes(remaining)} / ${formatBytes(limit)}`;
     }
 
     function renderStorageUsage(data) {
       const el = document.getElementById('storage-usage-content');
       const used = Number(data.usedBytes) || 0;
       const limit = Number(data.quotaLimitBytes) || 0;
-      // remainingBytes 服务端已 clamp ≥ 0；缺失时前端兜底
       const remRaw = Number(data.remainingBytes);
       const remaining = (Number.isFinite(remRaw) && remRaw >= 0) ? remRaw : Math.max(limit - used, 0);
       const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
@@ -794,20 +749,6 @@
         </div>
         <div class="usage-bar">
           <div class="usage-bar-fill ${level}" style="width:${pct}%;"></div>
-        </div>
-        <div class="info-grid" style="margin-top:1.25rem;">
-          <div class="info-item">
-            <div class="label">${t('storage.used')}</div>
-            <div class="value">${formatBytes(used)}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">${t('storage.total')}</div>
-            <div class="value">${formatBytes(limit)}</div>
-          </div>
-          <div class="info-item">
-            <div class="label">${t('storage.remaining')}</div>
-            <div class="value">${formatBytes(remaining)}</div>
-          </div>
         </div>`;
     }
 
@@ -820,53 +761,65 @@
       return `${val.toFixed(1)} ${units[i]}`;
     }
 
-    // ===== Mobile Sidebar Toggle =====
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
-    const menuToggle = document.getElementById('menu-toggle');
+    function openSidebar() {}
+    function closeSidebar() {}
 
-    function openSidebar() {
-      sidebar.classList.add('open');
-      sidebarOverlay.classList.add('visible');
-    }
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      sidebarOverlay.classList.remove('visible');
-    }
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
-    });
-    sidebarOverlay.addEventListener('click', closeSidebar);
+    const TAB_META = {
+      home:         { index: '01', title: '首页',     desc: '套餐、额度、账户，都在这儿' },
+      profile:      { index: '02', titleKey: 'dash.title.profile',      desc: '姓名、邮箱与账户身份信息' },
+      security:     { index: '03', titleKey: 'dash.title.security',     desc: '密码、邮箱验证、登录设备与关联身份' },
+      subscription: { index: '04', titleKey: 'dash.title.subscription', desc: '套餐选择、订阅状态与用量明细' },
+    };
 
-    // ===== Tab Switching =====
     function switchTab(tabName) {
       document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
       const section = document.getElementById('tab-' + tabName);
       const navItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
-
       if (section) section.classList.add('active');
-      if (navItem) navItem.classList.add('active');
+      if (navItem) {
+        navItem.classList.add('active');
+        navItem.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
 
-      const titleKeys = {
-        profile: 'dash.title.profile', security: 'dash.title.security', sessions: 'dash.title.sessions',
-        identities: 'dash.title.identities', subscription: 'dash.title.subscription', usage: 'dash.title.usage', danger: 'dash.title.danger'
-      };
-      const titleKey = titleKeys[tabName] || 'dash.title.default';
-      document.getElementById('page-title').textContent = t(titleKey);
-      document.title = t(titleKey) + ' - We Apps Account';
-
-      // Close sidebar on mobile after selecting a tab
+      const meta = TAB_META[tabName] || { index: '—', titleKey: 'dash.title.default', desc: '' };
+      const title = meta.title || t(meta.titleKey);
+      document.getElementById('page-title').textContent = title;
+      document.getElementById('page-index').textContent = meta.index;
+      document.getElementById('page-desc').textContent = meta.desc;
+      document.title = title + ' - We Apps Account';
       closeSidebar();
     }
 
-    // ===== Render Profile =====
     function renderProfile(user) {
       document.getElementById('info-user-id').textContent = user.$id;
       document.getElementById('info-name').textContent = user.name || t('dash.notSet');
       document.getElementById('info-email').textContent = user.email;
       document.getElementById('info-created').textContent = new Date(user.$createdAt).toLocaleString(getCurrentLanguage() === 'zh' ? 'zh-CN' : 'en-US');
+
+      const displayName = user.name || user.email;
+      const initial = displayName.charAt(0).toUpperCase();
+
+      const heroName = document.getElementById('profile-display-name');
+      const heroEmail = document.getElementById('profile-display-email');
+      const heroAvatar = document.getElementById('profile-avatar');
+      if (heroName) heroName.textContent = displayName;
+      if (heroEmail) heroEmail.textContent = user.email;
+      if (heroAvatar) heroAvatar.textContent = initial;
+
+      const homeName = document.getElementById('home-name');
+      const homeEmail = document.getElementById('home-email');
+      const homeAvatar = document.getElementById('home-avatar');
+      const homeBadge = document.getElementById('home-verify-badge');
+      if (homeName) homeName.textContent = user.name || user.email.split('@')[0];
+      if (homeEmail) homeEmail.textContent = user.email;
+      if (homeAvatar) homeAvatar.textContent = initial;
+      if (homeBadge) {
+        homeBadge.textContent = user.emailVerification ? t('dash.verified') : t('dash.unverified');
+        homeBadge.style.background = user.emailVerification ? 'var(--success-bg)' : '';
+        homeBadge.style.color = user.emailVerification ? 'var(--success)' : '';
+      }
 
       const badge = document.getElementById('verify-badge');
       if (user.emailVerification) {
@@ -879,7 +832,6 @@
         badge.style.color = '';
       }
 
-      // Show/hide verification banner
       const banner = document.getElementById('verify-banner');
       if (user.emailVerification) {
         banner.classList.remove('visible');
@@ -887,7 +839,6 @@
         banner.classList.add('visible');
       }
 
-      // Hide email verification card in security tab if already verified
       const verifyCard = document.getElementById('verify-card');
       if (verifyCard) {
         verifyCard.style.display = user.emailVerification ? 'none' : 'block';
@@ -896,11 +847,10 @@
       const nameDisplay = document.getElementById('user-name-display');
       nameDisplay.textContent = user.name || user.email;
       nameDisplay.removeAttribute('data-i18n');
-      document.getElementById('avatar-initial').textContent = (user.name || user.email).charAt(0).toUpperCase();
+      document.getElementById('avatar-initial').textContent = initial;
       document.getElementById('new-name').value = user.name || '';
     }
 
-    // ===== Update Name =====
     document.getElementById('update-name-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('new-name').value.trim();
@@ -915,7 +865,6 @@
       }
     });
 
-    // ===== Update Email =====
     document.getElementById('update-email-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('new-email').value.trim();
@@ -936,7 +885,6 @@
       }
     });
 
-    // ===== Update Password (Security tab) =====
     document.getElementById('security-password-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const oldPassword = document.getElementById('sec-old-password').value;
@@ -963,20 +911,12 @@
       updatePasswordRequirements(val, 'pw-requirements-dash');
     });
 
-    // ===== Sessions =====
-    // Classify session type from Appwrite's UA-parsed fields.
-    // Note: raw UA is NOT exposed; Appwrite pre-parses it into
-    // clientType / clientName / osName / deviceName etc.
-    // Our .NET desktop client uses a custom UA ("WeAppsDesktop/x (OS token)"),
-    // which Appwrite parses as: clientType='' + deviceName='desktop' + osName set.
     function classifySession(s) {
       const mobileDevices = ['smartphone', 'phablet', 'tablet'];
       const isMobileDevice = mobileDevices.includes((s.deviceName || '').toLowerCase());
       const ct = (s.clientType || '').toLowerCase();
-
       if (ct === 'browser') return isMobileDevice ? 'mobileBrowser' : 'browser';
       if (ct === 'mobile app') return 'mobileApp';
-      // SDK / HTTP-library clients (incl. our desktop app) and any desktop-OS session
       if (ct === 'library' || (s.deviceName || '').toLowerCase() === 'desktop' || s.osName) return 'desktopApp';
       if (isMobileDevice) return 'mobileApp';
       return 'unknown';
@@ -1019,7 +959,7 @@
             </li>`;
         }).join('');
       } catch (err) {
-        document.getElementById('session-list').innerHTML = `<li class="empty-state"><div class="icon">️</div><p>${t('dash.loadFailed')}</p></li>`;
+        document.getElementById('session-list').innerHTML = `<li class="empty-state"><div class="icon">⚠️</div><p>${t('dash.loadFailed')}</p></li>`;
       }
     }
 
@@ -1033,7 +973,6 @@
       }
     }
 
-    // ===== Identities =====
     async function loadIdentities() {
       try {
         const result = await account.listIdentities();
@@ -1058,7 +997,6 @@
       }
     }
 
-    // ===== Verification =====
     async function sendVerification() {
       try {
         client.setLocale(getAppwriteLocale());
@@ -1069,7 +1007,6 @@
       }
     }
 
-    // ===== Danger Zone =====
     function confirmDisableAccount() {
       pendingAction = async () => {
         try {
@@ -1086,9 +1023,7 @@
     function confirmDeleteAccount() {
       pendingAction = async () => {
         try {
-          await account.deleteIdentity('');  // This won't work directly
-          // Appwrite web SDK doesn't have direct account deletion from client
-          // Users need to use the server API or console
+          await account.deleteIdentity('');
           showToast(t('msg.contactAdmin'), 'info');
         } catch (err) {
           showToast(t('msg.cannotDelete'), 'error');
@@ -1097,10 +1032,7 @@
       showModal(t('dash.confirmDelete'), t('dash.confirmDeleteMsg'));
     }
 
-    // ===== Logout =====
     async function logout() {
-      // JWT handoff mode: the browser owns no session - 'current' is the
-      // desktop client's session. Do NOT delete it, just leave the page.
       if (window.__weappsJwtAuth) {
         clearJwtAuth();
         showToast(t('msg.loggedOut'), 'info');
@@ -1116,7 +1048,6 @@
       }
     }
 
-    // ===== Modal =====
     function showModal(title, message) {
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-message').textContent = message;
@@ -1133,7 +1064,6 @@
       if (pendingAction) pendingAction();
     }
 
-    // Close modal on overlay click
     document.getElementById('confirm-modal').addEventListener('click', (e) => {
       if (e.target === e.currentTarget) closeModal();
     });

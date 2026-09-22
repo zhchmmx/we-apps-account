@@ -5,102 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n-page-title="forgot.title">找回密码 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
+<body class="auth-page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="assets/We.png" alt="" class="brand-mark">
+      <span class="brand-name">We Apps Account</span>
+    </a>
+    <div id="lang-switcher-container"></div>
+  </header>
 
-  <div class="auth-layout">
-    <div class="auth-left">
-      <div class="auth-left-content">
-        <img src="assets/We.png" alt="We Apps" class="logo-large">
-        <h1 data-i18n="forgot.heading">重置密码</h1>
-        <p data-i18n="forgot.tagline">别担心，我们会帮您找回账户访问权限</p>
-      </div>
-    </div>
+  <main class="auth-stage">
+    <p class="auth-eyebrow">Recover · 找回</p>
+    <h1 class="auth-display" data-i18n="forgot.heading">重置密码</h1>
+    <p class="auth-lede" data-i18n="forgot.tagline">别担心，我们会帮您找回账户访问权限</p>
 
-    <div class="auth-right">
-      <div class="auth-card">
-        <img src="assets/We.png" alt="We" class="logo-small">
-        <h2 data-i18n="forgot.recoverPassword">找回密码</h2>
-        <p class="subtitle" data-i18n="forgot.subtitle">输入您的注册邮箱，我们将发送重置链接</p>
+    <div class="auth-card">
+      <h2 data-i18n="forgot.recoverPassword">找回密码</h2>
+      <p class="subtitle" data-i18n="forgot.subtitle">输入您的注册邮箱，我们将发送重置链接</p>
 
-        <div id="forgot-alert" class="alert"></div>
+      <div id="forgot-alert" class="alert"></div>
 
-        <!-- Step 1: Enter email -->
-        <div id="step-email">
-          <form id="forgot-form" novalidate>
-            <div class="form-group">
-              <label for="email"><span data-i18n="forgot.emailLabel">电子邮件</span> <span class="required">*</span></label>
-              <input type="email" id="email" class="form-input" data-i18n-placeholder="forgot.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
-            </div>
-
-            <button type="submit" id="forgot-btn" class="btn btn-primary">
-              <span class="spinner"></span>
-              <span class="btn-text" data-i18n="forgot.sendLink">发送重置链接</span>
-            </button>
-          </form>
-        </div>
-
-        <!-- Step 2: Enter new password -->
-        <div id="step-password" style="display:none;">
-          <div id="success-msg" class="alert alert-success visible" data-i18n="forgot.successMsg">
-            重置链接已发送到您的邮箱，请查收邮件后在此设置新密码。
+      <div id="step-email">
+        <form id="forgot-form" novalidate>
+          <div class="form-group">
+            <label for="email"><span data-i18n="forgot.emailLabel">电子邮件</span> <span class="required">*</span></label>
+            <input type="email" id="email" class="form-input" data-i18n-placeholder="forgot.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
           </div>
 
-          <form id="reset-form" novalidate>
-            <input type="hidden" id="user-id">
-            <input type="hidden" id="secret">
+          <button type="submit" id="forgot-btn" class="btn btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-text" data-i18n="forgot.sendLink">发送重置链接</span>
+          </button>
+        </form>
+      </div>
 
-            <div class="form-group">
-              <label for="new-password"><span data-i18n="forgot.newPasswordLabel">新密码</span> <span class="required">*</span></label>
-              <div class="password-wrapper">
-                <input type="password" id="new-password" class="form-input" data-i18n-placeholder="forgot.newPasswordPlaceholder" placeholder="至少 8 个字符" required>
-                <button type="button" class="password-toggle" onclick="togglePassword('new-password', this)">👁</button>
-              </div>
-              <div class="password-strength">
-                <div class="strength-bar"></div>
-                <div class="strength-bar"></div>
-                <div class="strength-bar"></div>
-                <div class="strength-bar"></div>
-                <div class="strength-bar"></div>
-              </div>
-              <div class="strength-text"></div>
-              <div class="pw-requirements" id="pw-requirements-forgot">
-                <div class="pw-req-title" data-i18n="pwReq.title">密码要求</div>
-                <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.length">8 到 256 个字符</span></div>
-                <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.uppercase">至少一个大写字母</span></div>
-                <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.lowercase">至少一个小写字母</span></div>
-                <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.symbol">至少一个符号（如 !@#$%）</span></div>
-                <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.digit">至少一个数字</span></div>
-              </div>
+      <div id="step-password" style="display:none;">
+        <div id="success-msg" class="alert alert-success visible" data-i18n="forgot.successMsg">
+          重置链接已发送到您的邮箱，请查收邮件后在此设置新密码。
+        </div>
+
+        <form id="reset-form" novalidate>
+          <input type="hidden" id="user-id">
+          <input type="hidden" id="secret">
+
+          <div class="form-group">
+            <label for="new-password"><span data-i18n="forgot.newPasswordLabel">新密码</span> <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="new-password" class="form-input" data-i18n-placeholder="forgot.newPasswordPlaceholder" placeholder="至少 8 个字符" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('new-password', this)"></button>
             </div>
-
-            <div class="form-group">
-              <label for="confirm-new-password"><span data-i18n="forgot.confirmPasswordLabel">确认新密码</span> <span class="required">*</span></label>
-              <div class="password-wrapper">
-                <input type="password" id="confirm-new-password" class="form-input" data-i18n-placeholder="forgot.confirmPasswordPlaceholder" placeholder="再次输入新密码" required>
-                <button type="button" class="password-toggle" onclick="togglePassword('confirm-new-password', this)">👁</button>
-              </div>
+            <div class="password-strength">
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
+              <div class="strength-bar"></div>
             </div>
+            <div class="strength-text"></div>
+            <div class="pw-requirements" id="pw-requirements-forgot">
+              <div class="pw-req-title" data-i18n="pwReq.title">密码要求</div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.length">8 到 256 个字符</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.uppercase">至少一个大写字母</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.lowercase">至少一个小写字母</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.symbol">至少一个符号（如 !@#$%）</span></div>
+              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.digit">至少一个数字</span></div>
+            </div>
+          </div>
 
-            <button type="submit" id="reset-btn" class="btn btn-primary">
-              <span class="spinner"></span>
-              <span class="btn-text" data-i18n="forgot.resetBtn">设置新密码</span>
-            </button>
-          </form>
-        </div>
+          <div class="form-group">
+            <label for="confirm-new-password"><span data-i18n="forgot.confirmPasswordLabel">确认新密码</span> <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="confirm-new-password" class="form-input" data-i18n-placeholder="forgot.confirmPasswordPlaceholder" placeholder="再次输入新密码" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('confirm-new-password', this)"></button>
+            </div>
+          </div>
 
-        <div class="auth-footer">
-          <a href="index.html" data-i18n="forgot.backToLogin">返回登录</a>
-        </div>
-        <div class="auth-footer auth-footer-legal">
-          <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
-        </div>
+          <button type="submit" id="reset-btn" class="btn btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-text" data-i18n="forgot.resetBtn">设置新密码</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="auth-footer">
+        <a href="index.html" data-i18n="forgot.backToLogin">返回登录</a>
       </div>
     </div>
-  </div>
+  </main>
+
+  <footer class="auth-foot-legal">
+    <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
+  </footer>
 
   <div class="toast-container"></div>
 
@@ -111,7 +110,6 @@
   <script>
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // Check for recovery params in URL
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
     const secret = urlParams.get('secret');
@@ -123,7 +121,6 @@
       document.getElementById('secret').value = secret;
     }
 
-    // Send recovery email
     document.getElementById('forgot-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert('forgot-alert');
@@ -156,7 +153,6 @@
       }
     });
 
-    // Reset password
     document.getElementById('reset-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert('forgot-alert');

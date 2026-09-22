@@ -5,42 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n-page-title="verify.title">邮箱验证 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
+<body class="auth-page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="assets/We.png" alt="" class="brand-mark">
+      <span class="brand-name">We Apps Account</span>
+    </a>
+    <div id="lang-switcher-container"></div>
+  </header>
 
-  <div class="auth-layout">
-    <div class="auth-left">
-      <div class="auth-left-content">
-        <img src="assets/We.png" alt="We Apps" class="logo-large">
-        <h1 data-i18n="verify.heading">验证邮箱</h1>
-        <p data-i18n="verify.tagline">确认您的邮箱地址以完成账户设置</p>
+  <main class="auth-stage">
+    <p class="auth-eyebrow">Verify · 验证</p>
+    <h1 class="auth-display" data-i18n="verify.heading">验证邮箱</h1>
+    <p class="auth-lede" data-i18n="verify.tagline">确认您的邮箱地址以完成账户设置</p>
+
+    <div class="auth-card">
+      <h2 data-i18n="verify.verifyEmail">邮箱验证</h2>
+      <div id="verify-alert" class="alert"></div>
+      <p class="subtitle" id="verify-status" data-i18n="verify.verifying">正在验证您的邮箱，请稍候...</p>
+
+      <button id="resend-btn" class="btn btn-secondary" style="width:100%;display:none;" onclick="resendVerification()">
+        <span data-i18n="verify.resend">重新发送验证邮件</span>
+      </button>
+
+      <div class="auth-footer">
+        <a href="index.html" data-i18n="common.backToLogin">返回登录</a>
       </div>
     </div>
+  </main>
 
-    <div class="auth-right">
-      <div class="auth-card">
-        <img src="assets/We.png" alt="We" class="logo-small">
-        <h2 data-i18n="verify.verifyEmail">邮箱验证</h2>
-        <div id="verify-alert" class="alert"></div>
-
-        <p class="subtitle" id="verify-status" data-i18n="verify.verifying">正在验证您的邮箱，请稍候...</p>
-
-        <button id="resend-btn" class="btn btn-secondary" style="width:100%;display:none;" onclick="resendVerification()">
-          <span data-i18n="verify.resend">重新发送验证邮件</span>
-        </button>
-
-        <div class="auth-footer">
-          <a href="index.html" data-i18n="common.backToLogin">返回登录</a>
-        </div>
-        <div class="auth-footer auth-footer-legal">
-          <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <footer class="auth-foot-legal">
+    <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
+  </footer>
 
   <div class="toast-container"></div>
 
@@ -51,7 +51,6 @@
   <script>
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // Ensure Appwrite is initialized before any verification logic
     initAppwrite();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -61,7 +60,6 @@
     const resendBtn = document.getElementById('resend-btn');
 
     if (userId && secret) {
-      // Auto-verify from email link
       (async () => {
         try {
           await account.updateVerification(userId, secret);
@@ -80,7 +78,6 @@
         }
       })();
     } else {
-      // No URL params — show resend option
       (async () => {
         const user = await checkAuth();
         if (user) {

@@ -5,102 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n-page-title="login.title">登录 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    .forgot-link {
-      display: block;
-      text-align: right;
-      font-size: 0.85rem;
-      margin-top: -0.75rem;
-      margin-bottom: 1.25rem;
-    }
-  </style>
 </head>
-<body>
-  <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
-  <div class="auth-layout">
-    <!-- Left Panel -->
-    <div class="auth-left">
-      <div class="auth-left-content">
-        <img src="assets/We.png" alt="We Apps" class="logo-large">
-        <h1 data-i18n="login.heading">We Apps Account</h1>
-        <p data-i18n="login.tagline">一个 We Apps 账户，畅享所有 We Apps 服务</p>
+<body class="auth-page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="assets/We.png" alt="" class="brand-mark">
+      <span class="brand-name">We Apps Account</span>
+    </a>
+    <div id="lang-switcher-container"></div>
+  </header>
+
+  <main class="auth-stage">
+    <p class="auth-eyebrow">Account · 账户</p>
+    <h1 class="auth-display" data-i18n="login.heading">We Apps Account</h1>
+    <p class="auth-lede" data-i18n="login.tagline">一个 We Apps 账户，畅享所有 We Apps 服务</p>
+
+    <div class="auth-card">
+      <h2 data-i18n="login.welcome">欢迎回来</h2>
+      <p class="subtitle" data-i18n="login.subtitle">登录您的 We Apps 账户</p>
+
+      <div id="login-alert" class="alert"></div>
+
+      <form id="login-form" novalidate>
+        <!-- 微软 OAuth 暂隐藏：Appwrite 微软 provider 将邮箱恒视为未验证（isEmailVerified 硬编码 false），
+             同邮箱已存在用户/身份时必回 400。这是 Appwrite 防账户枚举的刻意设计（PR #11280），非 bug，
+             暂无可配置的修复途径。如需恢复需先解决邮箱冲突。
+        <button type="button" id="oauth-microsoft" class="btn btn-oauth" onclick="oauthLogin('microsoft', 'login-alert')">
+          <span class="oauth-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
+              <path fill="#f25022" d="M1 1h10v10H1z"/>
+              <path fill="#7fba00" d="M12 1h10v10H12z"/>
+              <path fill="#00a4ef" d="M1 12h10v10H1z"/>
+              <path fill="#ffb900" d="M12 12h10v10H12z"/>
+            </svg>
+          </span>
+          <span data-i18n="login.microsoft">继续使用 Microsoft</span>
+        </button>
+        -->
+
+        <button type="button" id="oauth-github" class="btn btn-oauth" onclick="oauthLogin('github', 'login-alert')">
+          <span class="oauth-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+            </svg>
+          </span>
+          <span data-i18n="login.github">继续使用 GitHub</span>
+        </button>
+
+        <div class="divider" data-i18n="login.orContinue">或</div>
+
+        <div class="form-group">
+          <label for="email" data-i18n="login.emailLabel">电子邮件 <span class="required">*</span></label>
+          <input type="email" id="email" class="form-input" data-i18n-placeholder="login.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password" data-i18n="login.passwordLabel">密码 <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="password" class="form-input" data-i18n-placeholder="login.passwordPlaceholder" placeholder="输入密码" required autocomplete="current-password">
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性"></button>
+          </div>
+        </div>
+
+        <a href="forgot.html" class="forgot-link" data-i18n="login.forgot">忘记密码？</a>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="remember" checked>
+          <label for="remember" data-i18n="login.remember">记住我</label>
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn-primary">
+          <span class="spinner"></span>
+          <span class="btn-text" data-i18n="login.loginBtn">登录</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span data-i18n="login.haveAccount">还没有账户？</span> <a href="register.html" data-i18n="login.register">立即注册</a>
       </div>
     </div>
+  </main>
 
-    <!-- Right Panel - Login Form -->
-    <div class="auth-right">
-      <div class="auth-card">
-        <img src="assets/We.png" alt="We" class="logo-small">
-        <h2 data-i18n="login.welcome">欢迎回来</h2>
-        <p class="subtitle" data-i18n="login.subtitle">登录您的 We Apps 账户</p>
-
-        <div id="login-alert" class="alert"></div>
-
-        <form id="login-form" novalidate>
-          <!-- 微软 OAuth 暂隐藏：Appwrite 微软 provider 将邮箱恒视为未验证（isEmailVerified 硬编码 false），
-               同邮箱已存在用户/身份时必回 400。这是 Appwrite 防账户枚举的刻意设计（PR #11280），非 bug，
-               暂无可配置的修复途径。如需恢复需先解决邮箱冲突。
-          <button type="button" id="oauth-microsoft" class="btn btn-oauth" onclick="oauthLogin('microsoft', 'login-alert')">
-            <span class="oauth-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
-                <path fill="#f25022" d="M1 1h10v10H1z"/>
-                <path fill="#7fba00" d="M12 1h10v10H12z"/>
-                <path fill="#00a4ef" d="M1 12h10v10H1z"/>
-                <path fill="#ffb900" d="M12 12h10v10H12z"/>
-              </svg>
-            </span>
-            <span data-i18n="login.microsoft">继续使用 Microsoft</span>
-          </button>
-          -->
-
-          <button type="button" id="oauth-github" class="btn btn-oauth" onclick="oauthLogin('github', 'login-alert')">
-            <span class="oauth-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
-              </svg>
-            </span>
-            <span data-i18n="login.github">继续使用 GitHub</span>
-          </button>
-
-          <div class="divider" data-i18n="login.orContinue">或</div>
-
-          <div class="form-group">
-            <label for="email" data-i18n="login.emailLabel">电子邮件 <span class="required">*</span></label>
-            <input type="email" id="email" class="form-input" data-i18n-placeholder="login.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
-          </div>
-
-          <div class="form-group">
-            <label for="password" data-i18n="login.passwordLabel">密码 <span class="required">*</span></label>
-            <div class="password-wrapper">
-              <input type="password" id="password" class="form-input" data-i18n-placeholder="login.passwordPlaceholder" placeholder="输入密码" required autocomplete="current-password">
-              <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性">👁</button>
-            </div>
-          </div>
-
-          <a href="forgot.html" class="forgot-link" data-i18n="login.forgot">忘记密码？</a>
-
-          <div class="checkbox-group">
-            <input type="checkbox" id="remember" checked>
-            <label for="remember" data-i18n="login.remember">记住我</label>
-          </div>
-
-          <button type="submit" id="login-btn" class="btn btn-primary">
-            <span class="spinner"></span>
-            <span class="btn-text" data-i18n="login.loginBtn">登录</span>
-          </button>
-        </form>
-
-        <div class="auth-footer">
-          <span data-i18n="login.haveAccount">还没有账户？</span> <a href="register.html" data-i18n="login.register">立即注册</a>
-        </div>
-        <div class="auth-footer auth-footer-legal">
-          <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <footer class="auth-foot-legal">
+    <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
+  </footer>
 
   <div class="toast-container"></div>
 
@@ -109,7 +100,6 @@
   <script src="js/app.js"></script>
   <script src="js/i18n.js"></script>
   <script>
-    // Inject language switcher
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -135,7 +125,7 @@
 
       try {
         await account.createEmailPasswordSession(email, password);
-        clearJwtAuth(); // explicit session login replaces any handoff JWT
+        clearJwtAuth();
         showToast(t('login.loggingIn'), 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {
@@ -155,14 +145,11 @@
       }
     });
 
-    // Clear error on input
     document.querySelectorAll('.form-input').forEach(input => {
       input.addEventListener('input', () => input.classList.remove('error'));
     });
 
-    // Auto-redirect if already logged in
     (async () => {
-      // Client-app handoff: opened with ?jwt= from the desktop app
       if (new URLSearchParams(window.location.search).has('jwt')) {
         showAlert('login-alert', t('jwt.signingIn'), 'info');
         const user = await loginWithUrlJwt();
@@ -173,7 +160,6 @@
         }
         return;
       }
-      // Persisted handoff JWT (same tab) or an existing session -> skip login
       const user = await restoreJwtAuth() || await checkAuth();
       if (user) navigateTo('dashboard.html');
     })();

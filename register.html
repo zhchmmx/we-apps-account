@@ -5,95 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n-page-title="register.title">注册 - We Apps Account</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body>
-  <div id="lang-switcher-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:100;"></div>
-  <div class="auth-layout">
-    <!-- Left Panel -->
-    <div class="auth-left">
-      <div class="auth-left-content">
-        <img src="assets/We.png" alt="We Apps" class="logo-large">
-        <h1 data-i18n="register.heading">加入 We Apps</h1>
-        <p data-i18n="register.tagline">创建您的账户，开启无限可能</p>
-      </div>
-    </div>
+<body class="auth-page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="assets/We.png" alt="" class="brand-mark">
+      <span class="brand-name">We Apps Account</span>
+    </a>
+    <div id="lang-switcher-container"></div>
+  </header>
 
-    <!-- Right Panel - Register Form -->
-    <div class="auth-right">
-      <div class="auth-card">
-        <img src="assets/We.png" alt="We" class="logo-small">
-        <h2 data-i18n="register.createAccount">创建账户</h2>
-        <p class="subtitle" data-i18n="register.subtitle">注册 We Apps 账户</p>
+  <main class="auth-stage">
+    <p class="auth-eyebrow">Create · 开户</p>
+    <h1 class="auth-display" data-i18n="register.heading">加入 We Apps</h1>
+    <p class="auth-lede" data-i18n="register.tagline">创建您的账户，开启无限可能</p>
+    <ul class="auth-points" aria-hidden="true">
+      <li><span>01</span>一次登录，通行全部 We Apps</li>
+      <li><span>02</span>会话、安全与订阅集中管理</li>
+      <li><span>03</span>邮箱验证与人机校验护航</li>
+    </ul>
 
-        <div id="register-alert" class="alert"></div>
+    <div class="auth-card">
+      <h2 data-i18n="register.createAccount">创建账户</h2>
+      <p class="subtitle" data-i18n="register.subtitle">注册 We Apps 账户</p>
 
-        <form id="register-form" novalidate>
-          <div class="form-group">
-            <label for="name" data-i18n="register.nameLabel">姓名</label>
-            <input type="text" id="name" class="form-input" data-i18n-placeholder="register.namePlaceholder" placeholder="您的姓名（可选）" autocomplete="name">
-          </div>
+      <div id="register-alert" class="alert"></div>
 
-          <div class="form-group">
-            <label for="email" data-i18n="register.emailLabel">电子邮件 <span class="required">*</span></label>
-            <input type="email" id="email" class="form-input" data-i18n-placeholder="register.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
-          </div>
-
-          <div class="form-group">
-            <label for="password" data-i18n="register.passwordLabel">密码 <span class="required">*</span></label>
-            <div class="password-wrapper">
-              <input type="password" id="password" class="form-input" data-i18n-placeholder="register.passwordPlaceholder" placeholder="至少 8 个字符" required autocomplete="new-password">
-              <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性">👁</button>
-            </div>
-            <div class="password-strength">
-              <div class="strength-bar"></div>
-              <div class="strength-bar"></div>
-              <div class="strength-bar"></div>
-              <div class="strength-bar"></div>
-              <div class="strength-bar"></div>
-            </div>
-            <div class="strength-text"></div>
-            <div class="pw-requirements" id="pw-requirements">
-              <div class="pw-req-title" data-i18n="pwReq.title">密码要求</div>
-              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.length">8 到 256 个字符</span></div>
-              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.uppercase">至少一个大写字母</span></div>
-              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.lowercase">至少一个小写字母</span></div>
-              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.symbol">至少一个符号（如 !@#$%）</span></div>
-              <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.digit">至少一个数字</span></div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="confirm-password" data-i18n="register.confirmPasswordLabel">确认密码 <span class="required">*</span></label>
-            <div class="password-wrapper">
-              <input type="password" id="confirm-password" class="form-input" data-i18n-placeholder="register.confirmPasswordPlaceholder" placeholder="再次输入密码" required autocomplete="new-password">
-              <button type="button" class="password-toggle" onclick="togglePassword('confirm-password', this)" aria-label="切换密码可见性">👁</button>
-            </div>
-            <div class="form-error" id="password-match-error" data-i18n="register.passwordMismatch">两次输入的密码不一致</div>
-          </div>
-
-          <div class="checkbox-group">
-            <input type="checkbox" id="terms" required>
-            <label for="terms"><span data-i18n="register.termsText">我已阅读并同意</span> <a href="terms.html" target="_blank" rel="noopener" data-i18n="register.termsLink">服务条款</a><span data-i18n="register.sep1">、</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="register.privacyLink">隐私政策</a> <span data-i18n="register.and">和</span> <a href="aup.html" target="_blank" rel="noopener" data-i18n="register.aupLink">可接受使用政策</a></label>
-          </div>
-
-          <!-- Cloudflare Turnstile widget (implicit render; sitekey is public) -->
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAEewNzSa63Jrfkbk" data-theme="light" style="margin-bottom:1.25rem;"></div>
-
-          <button type="submit" id="register-btn" class="btn btn-primary">
-            <span class="spinner"></span>
-            <span class="btn-text" data-i18n="register.registerBtn">创建账户</span>
-          </button>
-        </form>
-
-        <div class="auth-footer">
-          <span data-i18n="register.hasAccount">已有账户？</span> <a href="index.html" data-i18n="register.login">立即登录</a>
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label for="name" data-i18n="register.nameLabel">姓名</label>
+          <input type="text" id="name" class="form-input" data-i18n-placeholder="register.namePlaceholder" placeholder="您的姓名（可选）" autocomplete="name">
         </div>
+
+        <div class="form-group">
+          <label for="email" data-i18n="register.emailLabel">电子邮件 <span class="required">*</span></label>
+          <input type="email" id="email" class="form-input" data-i18n-placeholder="register.emailPlaceholder" placeholder="name@example.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password" data-i18n="register.passwordLabel">密码 <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="password" class="form-input" data-i18n-placeholder="register.passwordPlaceholder" placeholder="至少 8 个字符" required autocomplete="new-password">
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="切换密码可见性"></button>
+          </div>
+          <div class="password-strength">
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+          </div>
+          <div class="strength-text"></div>
+          <div class="pw-requirements" id="pw-requirements">
+            <div class="pw-req-title" data-i18n="pwReq.title">密码要求</div>
+            <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.length">8 到 256 个字符</span></div>
+            <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.uppercase">至少一个大写字母</span></div>
+            <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.lowercase">至少一个小写字母</span></div>
+            <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.symbol">至少一个符号（如 !@#$%）</span></div>
+            <div class="pw-req-item"><span class="pw-req-icon">✓</span><span data-i18n="pwReq.digit">至少一个数字</span></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password" data-i18n="register.confirmPasswordLabel">确认密码 <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="confirm-password" class="form-input" data-i18n-placeholder="register.confirmPasswordPlaceholder" placeholder="再次输入密码" required autocomplete="new-password">
+            <button type="button" class="password-toggle" onclick="togglePassword('confirm-password', this)" aria-label="切换密码可见性"></button>
+          </div>
+          <div class="form-error" id="password-match-error" data-i18n="register.passwordMismatch">两次输入的密码不一致</div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms" required>
+          <label for="terms"><span data-i18n="register.termsText">我已阅读并同意</span> <a href="terms.html" target="_blank" rel="noopener" data-i18n="register.termsLink">服务条款</a><span data-i18n="register.sep1">、</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="register.privacyLink">隐私政策</a> <span data-i18n="register.and">和</span> <a href="aup.html" target="_blank" rel="noopener" data-i18n="register.aupLink">可接受使用政策</a></label>
+        </div>
+
+        <!-- Cloudflare Turnstile widget (implicit render; sitekey is public) -->
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEewNzSa63Jrfkbk" data-theme="light" style="margin-bottom:1.25rem;"></div>
+
+        <button type="submit" id="register-btn" class="btn btn-primary">
+          <span class="spinner"></span>
+          <span class="btn-text" data-i18n="register.registerBtn">创建账户</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span data-i18n="register.hasAccount">已有账户？</span> <a href="index.html" data-i18n="register.login">立即登录</a>
       </div>
     </div>
-  </div>
+  </main>
+
+  <footer class="auth-foot-legal">
+    <a href="terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">服务条款</a><span class="legal-sep">·</span><a href="privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">隐私政策</a><span class="legal-sep">·</span><a href="aup.html" target="_blank" rel="noopener" data-i18n="legal.aup">可接受使用政策</a>
+  </footer>
 
   <div class="toast-container"></div>
 
@@ -102,10 +110,8 @@
   <script src="js/app.js"></script>
   <script src="js/i18n.js"></script>
   <script>
-    // Inject language switcher
     document.getElementById('lang-switcher-container').innerHTML = renderLanguageSwitcher();
 
-    // Password strength & requirements
     const pwInput = document.getElementById('password');
     const pwReqPanel = document.getElementById('pw-requirements');
     pwInput.addEventListener('input', (e) => {
@@ -125,7 +131,6 @@
       const confirmPassword = document.getElementById('confirm-password').value;
       const terms = document.getElementById('terms').checked;
 
-      // Validation
       if (!email || !validateEmail(email)) {
         showAlert('register-alert', t('register.invalidEmail'), 'error');
         return;
@@ -148,8 +153,6 @@
         return;
       }
 
-      // Cloudflare Turnstile: ensure the widget was solved, then validate
-      // the token server-side via the Pages Function before creating the account.
       const fd = new FormData(e.target);
       if (!fd.get('cf-turnstile-response')) {
         showAlert('register-alert', t('register.turnstileRequired'), 'error');
@@ -159,7 +162,6 @@
       setLoading('register-btn', true);
 
       try {
-        // Validate the Turnstile token server-side (POST /api/register)
         const verifyResp = await fetch('/api/register', { method: 'POST', body: fd });
         if (!verifyResp.ok) {
           throw { type: 'turnstile_failed', message: t('register.turnstileFailed') };
@@ -172,9 +174,8 @@
           name || undefined
         );
 
-        // Auto-login after registration
         await account.createEmailPasswordSession(email, password);
-        clearJwtAuth(); // explicit session login replaces any handoff JWT
+        clearJwtAuth();
         showToast(t('register.success'), 'success');
         setTimeout(() => navigateTo('dashboard.html'), 800);
       } catch (err) {
@@ -186,7 +187,6 @@
         };
         const msg = messages[err.type] || err.message || t('register.registerFailed');
         showAlert('register-alert', msg, 'error');
-        // Turnstile tokens are single-use; reset the widget so the user can retry
         if (window.turnstile) turnstile.reset();
       } finally {
         setLoading('register-btn', false);
