@@ -100,7 +100,7 @@ const translations = {
     'sub.perMonth': '/月',
     'sub.freeFeature1': '每月有限生成服务',
     'sub.freeFeature2': '500 MB 存储空间',
-    'sub.proFeature1': '每个月 $5 AI 使用额度',
+    'sub.proFeature1': '10 倍免费额度',
     'sub.proFeature2': '5 GB 存储空间',
     'sub.activate': '激活',
     'sub.activated': '已激活',
@@ -123,6 +123,7 @@ const translations = {
     'usage.tokensIn': '输入 Tokens',
     'usage.tokensOut': '输出 Tokens',
     'usage.remaining': '剩余额度',
+    'usage.used': '已使用',
     'usage.loadFailed': '加载使用情况失败',
     'usage.retry': '重试',
 
@@ -408,7 +409,7 @@ const translations = {
     'sub.perMonth': '/mo',
     'sub.freeFeature1': 'Limited AI generations per month',
     'sub.freeFeature2': '500 MB storage',
-    'sub.proFeature1': '$5 AI usage credit per month',
+    'sub.proFeature1': '10x free quota',
     'sub.proFeature2': '5 GB storage',
     'sub.activate': 'Activate',
     'sub.activated': 'Activated',
@@ -431,6 +432,7 @@ const translations = {
     'usage.tokensIn': 'Input Tokens',
     'usage.tokensOut': 'Output Tokens',
     'usage.remaining': 'Remaining',
+    'usage.used': 'Used',
     'usage.loadFailed': 'Failed to load usage data',
     'usage.retry': 'Retry',
 
